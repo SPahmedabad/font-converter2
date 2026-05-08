@@ -38,8 +38,8 @@
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <script>
         // Production-ready Terafont Aakash Mapping
-       const aakashMap = {
-    // Basic Characters & Punctuation
+     const aakashMap = {
+    // Basic Numbers & Characters
     "!": "\u0AE7", "\"": "\u0AB0\u0ACD", "#": "\u0AE9", "$": "\u0AEA", "%": "\u0AAA\u0ACD",
     "&": "\u0AEC", "'": "\u0AC3", "(": "\u0AEE", ")": "\u0AEF", "*": "\u0AED",
     "+": "\u0AA4\u0ACD\u0AB0\u200B", ",": "\u0AB2", "-": "\u0AA2", ".": "\u0A88",
@@ -55,24 +55,32 @@
     "Y": "\u0AA5", "Z": "\u0AB0", "[": "\u0AC7", "\\": "\u0A82", "]": "\u0AC1",
     "^": "\u0AA3\u0ACD", "_": "\u0AE6",
 
-    // Lowercase & Special Mappings
+    // Lowercase Mapping
     "a": "\u0AAC\u0ACD", "b": "\u0A95\u0ACD", "d": "\u0AAE\u0ACD", "e": "\u0AAD\u0ACD", 
     "g": "\u0AA8\u0ACD", "h": "\u0A9D", "i": "\u0AAF\u0ACD", "j": "\u0AB5\u0ACD", 
-    "k": "\u0A8B", "l": "\u0ABF", "p": "\u0A89", "t": "\u0AA4\u0ACD", 
-    "z": "\u0AB6\u0ACD\u0AB0", "~": "\u0AB0\u0AC2",
-    
-    // Fixes for your specific text
-    "v": " v ",  // Terafont uses 'v' as a separator/dash in your text
-    "s": "(",    // Opening bracket mapping
-    "f": ")",    // Closing bracket mapping
-    "o": "ો",    // Standard matra fix
-    "q": "્",    // Halant mapping
-    
-    // Formatting/Control Arrays
-    "forwardChars": ["\u0ABF"], // Hrasva 'i' matra
-    "backwardChars": ["\""],    // Reph mapping
+    "k": "\u0A8B", "l": "\u0ABF", "p": "\u0AAA", "t": "\u0AA4\u0ACD", 
+    "z": "\u0AB6\u0ACD\u0AB0", "~": "\u0AB0\u0AC2", "o": "\u0ACB",
+
+    // Specific symbols found in your text
+    "v": " - ",   // Separator fix for bullets/dashes
+    "s": "(",     // Bracket fix
+    "f": ")",     // Bracket fix
+    "q": "્",     // Halant fix
+    "|": "્ર",    // This fixes the p| (પ્ર) and m| (મ્ર) issue
+
+    // Control Logic
+    "forwardChars": ["\u0ABF"],
+    "backwardChars": ["\""],
     "comboChars": {
-        "p|": "\u0AAA\u0ACD\u0AB0", // Fix for 'પ્ર' (Pr) found in your text
+        // Handling the pipe character as a conjunct modifier
+        "p|": "\u0AAA\u0ACD\u0AB0",
+        "પ|": "\u0AAA\u0ACD\u0AB0",
+        "ભ|": "\u0AAD\u0ACD\u0AB0",
+        "ગ|": "\u0A97\u0ACD\u0AB0",
+        "દ|": "\u0AA6\u0ACD\u0AB0",
+        "બ|": "\u0AAC\u0ACD\u0AB0",
+        "મ|": "\u0AAE\u0ACD\u0AB0",
+        "કæું": "કહ્યું", // Custom fix for specific word logic errors
         "\u0AB7\u0ACD\u0ABE": "\u0AB7",
         "\u0A95\u0ACD\u0AB7\u0ABE": "\u0A95\u0ACD\u0AB7",
         "\u0AB2\u0ACD\u0ABE": "\u0AB2"
