@@ -1,334 +1,307 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="gu">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Terafont Aakash to Unicode Converter</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <style>
-        body { background-color: #f4f7f6; padding-top: 20px; }
-        .converter-card { background: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        textarea { resize: vertical; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 16px; }
-        #btn-convert { margin-top: 15px; font-weight: bold; letter-spacing: 1px; }
-    </style>
-</head>
-<body>
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-10 col-md-offset-1">
-                <div class="converter-card">
-                    <h2 class="text-center text-primary">Terafont Aakash to Unicode</h2>
-                    <hr>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <h4>1. Source (Terafont Aakash)</h4>
-                            <textarea id="src" class="form-control" rows="15" placeholder="Paste your 200+ pages of Terafont text here..."></textarea>
-                            <button id="btn-convert" class="btn btn-success btn-lg btn-block">CONVERT TO GUJARATI UNICODE</button>
-                        </div>
-                        <div class="col-md-6">
-                            <h4>2. Destination (Unicode / Shruti)</h4>
-                            <textarea id="dst" class="form-control" rows="18" readonly placeholder="Result will appear here..."></textarea>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-   <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<title>Terafont Aakash Converter</title>
+
+<link rel="stylesheet"
+href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+<style>
+
+body{
+    background:#f5f5f5;
+    padding:20px;
+    font-family:Arial;
+}
+
+.card{
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 2px 10px rgba(0,0,0,0.1);
+}
+
+textarea{
+    width:100%;
+    resize:vertical;
+    font-size:18px;
+    line-height:1.7;
+}
+
+.btn{
+    margin-top:15px;
+    font-size:18px;
+    font-weight:bold;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container-fluid">
+
+<div class="card">
+
+<h2 class="text-center text-primary">
+Terafont Aakash → Unicode Gujarati
+</h2>
+
+<hr>
+
+<div class="row">
+
+<div class="col-md-6">
+
+<h4>Terafont Text</h4>
+
+<textarea id="src" rows="25"></textarea>
+
+<button id="convertBtn"
+class="btn btn-success btn-block">
+Convert
+</button>
+
+</div>
+
+<div class="col-md-6">
+
+<h4>Unicode Gujarati</h4>
+
+<textarea id="dst" rows="25"></textarea>
+
+</div>
+
+</div>
+</div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
 <script>
 
-const aakashMap = {
+const map = {
 
-    // =========================
-    // BASIC CHAR MAP
-    // =========================
+"A":"બ",
+"B":"ખ",
+"C":"હ",
+"D":"મ",
+"E":"ભ",
+"F":"ા",
+"G":"ન",
+"H":"જ",
+"I":"ય",
+"J":"વ",
+"K":"છ",
+"L":"ી",
+"M":"ો",
+"N":"દ",
+"O":"ફ",
+"P":"।",
+"Q":"ષ્",
+"R":"ચ",
+"S":"ક",
+"T":"ત",
+"U":"ગ",
+"V":"અ",
+"W":"ધ",
+"X":"શ",
+"Y":"થ",
+"Z":"ર",
 
-    "!": "૧",
-    "\"": "ર્",
-    "#": "૩",
-    "$": "૪",
-    "%": "પ્",
-    "&": "૬",
-    "'": "ૃ",
-    "(": "૮",
-    ")": "૯",
-    "*": "૭",
-    "+": "ત્ર",
-    ",": "લ",
-    "-": "ડ",
-    ".": "ઈ",
-    "/": "ળ",
+"a":"બ્",
+"b":"ક્",
+"c":"ં",
+"d":"મ્",
+"e":"ભ્",
+"f":")",
+"g":"ન્",
+"h":"ઝ",
+"i":"ય્",
+"j":"વ્",
+"k":"ઋ",
+"l":"િ",
+"m":"ુ",
+"n":"ં",
+"o":"ો",
+"p":"પ",
+"q":"્",
+"r":"ર્",
+"s":"(",
+"t":"ત્",
+"u":"ૂ",
+"v":"-",
+"w":"ૈ",
+"x":"ં",
+"y":"ે",
+"z":"શ્ર",
 
-    "0": "ડ",
-    "1": "ક્ષ",
-    "2": "૨",
-    "3": "ઘ",
-    "4": ",",
-    "5": "પ",
-    "6": "ણ",
-    "7": "જ્ઞ",
-    "8": "ટ",
-    "9": "ઠ",
+"0":"ડ",
+"1":"ક્ષ",
+"2":"૨",
+"3":"ઘ",
+"4":"૪",
+"5":"પ",
+"6":"ણ",
+"7":"જ્ઞ",
+"8":"ટ",
+"9":"ઠ",
 
-    ":": "સ્",
-    ";": "સ",
-    "<": "લ્",
-    "=": "્ર",
-    ">": "ઇ",
-    "?": "ળ્",
+"!":"૧",
+"@":"૨",
+"#":"૩",
+"$":"૪",
+"%":"૫",
+"^":"૬",
+"&":"૭",
+"*":"૮",
+"(":"૯",
+")":"૦",
 
-    "@": "%",
-    "A": "બ",
-    "B": "ખ",
-    "C": "હ",
-    "D": "મ",
-    "E": "ભ",
-    "F": "ા",
-    "G": "ન",
-    "H": "જ",
-    "I": "ય",
-    "J": "વ",
-    "K": "છ",
-    "L": "ી",
-    "M": "ો",
-    "N": "દ",
-    "O": "ફ",
-    "P": ".",
-    "Q": "ષ્",
-    "R": "ચ",
-    "S": "ક",
-    "T": "ત",
-    "U": "ગ",
-    "V": "અ",
-    "W": "ધ",
-    "X": "શ",
-    "Y": "થ",
-    "Z": "ર",
+"[":"ે",
+"]":"ુ",
+"{":"ૈ",
+"}":"ૂ",
 
-    "[": "ે",
-    "\\": "ં",
-    "]": "ુ",
-    "^": "ણ્",
-    "_": "૦",
+"|":"્ર",
 
-    // =========================
-    // LOWERCASE
-    // =========================
+"<":"લ્",
+">":"ઇ",
 
-    "a": "બ્",
-    "b": "ક્",
-    "c": "્ચ",
-    "d": "મ્",
-    "e": "ભ્",
-    "f": ")",
-    "g": "ન્",
-    "h": "ઝ",
-    "i": "ય્",
-    "j": "વ્",
-    "k": "ઋ",
-    "l": "િ",
-    "m": "મ",
-    "n": "ં",
-    "o": "ો",
-    "p": "પ",
-    "q": "્",
-    "r": "ર્",
-    "s": "(",
-    "t": "ત્",
-    "u": "ઉ",
-    "v": " - ",
-    "w": "ધ્",
-    "x": "શ્",
-    "y": "થ્",
-    "z": "શ્ર",
-    "~": "રૂ",
+";":"સ",
+":":"સ્",
 
-    // =========================
-    // OCR / GARBAGE FIX
-    // =========================
+"/":"ળ",
+"?":"ળ્",
 
-    "Ò": "જ",
-    "Ô": "ય",
-    "Ê": "પ્ર",
-    "Ã": "દ્ર",
-    "Ä": "દ્ધ",
-    "Å": "ક્ષ",
-    "Æ": "ત્ર",
-    "Ç": "ત્ત",
-    "È": "ન્ન",
-    "É": "શ્વ",
-    "Ë": "હ્ન",
-    "Ì": "દ્દ",
-    "Í": "હ્ય",
-    "Î": "હ્મ",
-    "Ï": "શ્વ",
-    "Ð": "ત્ત્વ",
-    "Ñ": "જ્ઞ",
-    "Ó": "હૃ",
-    "Õ": "હ્ન",
-    "Ö": "દ્ય",
-    "×": "॥",
-    "Ÿ": "",
-    "™": "",
-    "æ": "્યું",
+"~":"રૂ",
 
-    // =========================
-    // FORWARD MATRA
-    // =========================
+"\"":"ર્",
 
-    forwardChars: ["િ"],
+"æ":"હ્ય",
+"Ä":"ધ",
+"Ê":"ક્ર",
+"Ò":"જી",
+"Ô":"ઓ",
+"Ÿ":"્ય",
+"×":"॥",
 
-    // =========================
-    // BACKWARD REPH
-    // =========================
+"£":"દ્વ",
+"ã":"દ્ર",
+"Þ":"હ્ન",
+"‰":"શ્વ",
+"€":"ત્ર",
 
-    backwardChars: ["ર્"],
-
-    // =========================
-    // COMBOS
-    // =========================
-
-    comboChars: {
-
-        // પ્ર
-        "p|": "પ્ર",
-        "P|": "પ્ર",
-
-        // બ્ર
-        "A|": "બ્ર",
-
-        // ક્ર
-        "S|": "ક્ર",
-
-        // ગ્ર
-        "U|": "ગ્ર",
-
-        // દ્ર
-        "N|": "દ્ર",
-
-        // મ્ર
-        "D|": "મ્ર",
-
-        // શ્ર
-        "X|": "શ્ર",
-
-        // Gujarati direct
-        "પ|": "પ્ર",
-        "બ|": "બ્ર",
-        "ક|": "ક્ર",
-        "ગ|": "ગ્ર",
-        "દ|": "દ્ર",
-        "મ|": "મ્ર",
-        "શ|": "શ્ર",
-
-        // cleanup fixes
-        "કæું": "કહ્યું",
-        "થયંુ": "થયું",
-        "કયુર્ં": "કયું",
-        "અા": "આ",
-        "અે": "એ",
-        "અો": "ઓ",
-        "અૈ": "ઐ"
-    }
 };
 
+function convertText(text){
 
+let out = "";
 
-// ======================================
-// MAIN CONVERTER
-// ======================================
+/* CHARACTER MAP */
 
-function convertAakash(text) {
+for(let i=0;i<text.length;i++){
 
-    // =========================
-    // STEP 1: APPLY COMBOS FIRST
-    // =========================
+    let ch = text[i];
 
-    for (let key in aakashMap.comboChars) {
-        text = text.split(key).join(aakashMap.comboChars[key]);
-    }
-
-    // =========================
-    // STEP 2: CHARACTER MAP
-    // =========================
-
-    let result = "";
-
-    for (let i = 0; i < text.length; i++) {
-
-        let ch = text[i];
-
-        result += aakashMap[ch] || ch;
-    }
-
-    // =========================
-    // STEP 3: FIX "િ"
-    // =========================
-
-    result = result.replace(
-        /([કખગઘઙચછજઝઞટઠડઢણતથદધનપફબભમયરલવશષસહળક્ષજ્ઞ])િ/g,
-        "િ$1"
-    );
-
-    // =========================
-    // STEP 4: REMOVE BAD HALANTS
-    // =========================
-
-    result = result.replace(/્+/g, "્");
-
-    // =========================
-    // STEP 5: FIX REPH ISSUES
-    // =========================
-
-    result = result.replace(/ર્ર/g, "ર્");
-
-    // =========================
-    // STEP 6: NORMALIZATION
-    // =========================
-
-    result = result
-        .replace(/અા/g, "આ")
-        .replace(/અે/g, "એ")
-        .replace(/અો/g, "ઓ")
-        .replace(/અૌ/g, "ઔ")
-        .replace(/ંા/g, "ાં")
-        .replace(/ેે/g, "ે")
-        .replace(/ોો/g, "ો")
-        .replace(/િિ/g, "િ")
-        .replace(/્ા/g, "")
-        .replace(/।।/g, "॥");
-
-    // =========================
-    // STEP 7: REMOVE EXTRA SPACES
-    // =========================
-
-    result = result.replace(/[ ]+/g, " ");
-
-    return result;
+    out += map[ch] || ch;
 }
 
+/* FIX i MATRA */
 
+out = out.replace(/([ક-હ])િ/g,"િ$1");
 
-// ======================================
-// BUTTON CLICK
-// ======================================
+/* FIX REPH */
 
-$("#btn-convert").click(function () {
+out = out.replace(/ર્([ક-હ])/g,"ર઼્$1");
 
-    const src = $("#src").val();
+/* FIX COMMON WORDS */
 
-    if (!src) {
-        $("#dst").val("");
-        return;
-    }
+const fixes = {
 
-    const converted = convertAakash(src);
+"પુત્ર​":"પુત્ર",
+"યાત્ર​ા":"યાત્રા",
+"શત્ર​ુ":"શત્રુ",
+"ભકિત":"ભક્તિ",
+"મુકિત":"મુક્તિ",
+"દશર્ન":"દર્શન",
+"વણર્ન":"વર્ણન",
+"તપüયાર્":"તપસ્યા",
+"સંયમનું":"સંયમનું",
+"પદાસ":"ઉદાસ",
+"દુોખ":"દુઃખ",
+"માયોર્":"માર્યો",
+"કæુું":"કહ્યું",
+"થાઅો":"થાઓ",
+"નÞી":"નથી",
+"અે":"એ",
+"અો":"ઓ",
+"અાવ્યા":"આવ્યા",
+"અાપો":"આપો",
+"અાવશે":"આવશે",
+"અેક":"એક",
+"અેટલું":"એટલું",
+"જ્ઞ​":"જ્ઞ",
+"ક્ષડડ":"ખંડ",
+"ક્ષઈક્ષ":"એકેક",
+"મxકરી":"મશ્કરી",
+"વÄધાઈને":"વીંધાઈને",
+"છ}ટકે":"છૂટકે",
+"છ}ટી":"છૂટી",
+"ત}ટી":"તૂટી",
+"ફ}લાયા":"ફૂલાયા",
+"વwયો":"વધ્યો",
+"પગ્ર":"પછી",
+"સ¿ા":"સત્તા",
+"ક્ષ":"એક",
+"Ô":"જો",
+"Ò":"જી",
+"wયાન":"ધ્યાન",
+"ક્ષીરસાગર":"ક્ષીરસાગર",
+"ક્ષ વાર":"એક વાર",
+"ક્ષ દિવસ":"એક દિવસ",
+"ક્ષ વષર્":"એક વર્ષ",
+"ક્ષ પગે":"એક પગે",
+"ક્ષ લાનું":"એકછત્ર",
+"સßજનો":"સજ્જનો",
+"પ£ાર":"ઉદ્ધાર",
 
-    $("#dst").val(converted);
+};
+
+for(let key in fixes){
+
+    out = out.split(key).join(fixes[key]);
+}
+
+/* REMOVE ZERO WIDTH */
+
+out = out.replace(/[\u200B-\u200D\uFEFF]/g,'');
+
+/* CLEAN SPACES */
+
+out = out.replace(/\s+/g,' ');
+
+/* RESTORE PARAGRAPHS */
+
+out = out.replace(/ \-/g,"\n-");
+
+return out;
+}
+
+$("#convertBtn").click(function(){
+
+let src = $("#src").val();
+
+let result = convertText(src);
+
+$("#dst").val(result);
+
 });
 
 </script>
+
 </body>
 </html>
