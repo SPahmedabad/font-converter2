@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="gu">
+
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -33,12 +35,17 @@ textarea{
     sans-serif;
 }
 
-#btn{
+#btn-convert{
     margin-top:15px;
     font-weight:bold;
 }
 
+h2{
+    margin-bottom:20px;
+}
+
 </style>
+
 </head>
 
 <body>
@@ -55,21 +62,24 @@ textarea{
 Terafont Aakash → Unicode Converter
 </h2>
 
-<hr>
-
 <div class="row">
 
 <div class="col-md-6">
 
 <h4>Source (Aakash Font)</h4>
 
-<textarea id="src"
+<textarea
+id="src"
 class="form-control"
-rows="22"></textarea>
+rows="24"
+placeholder="Paste Aakash font text here..."></textarea>
 
-<button id="btn"
+<button
+id="btn-convert"
 class="btn btn-success btn-lg btn-block">
-CONVERT
+
+CONVERT TO UNICODE
+
 </button>
 
 </div>
@@ -78,17 +88,23 @@ CONVERT
 
 <h4>Unicode Output</h4>
 
-<textarea id="dst"
+<textarea
+id="dst"
 class="form-control"
-rows="22"
-readonly></textarea>
+rows="24"
+readonly
+placeholder="Unicode Gujarati output..."></textarea>
 
 </div>
 
 </div>
+
 </div>
+
 </div>
+
 </div>
+
 </div>
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -112,7 +128,7 @@ const map = {
 "M":"ો",
 "N":"દ",
 "O":"ફ",
-"P":".",
+"P":"઼",
 "Q":"ષ્",
 "R":"ચ",
 "S":"ક",
@@ -205,19 +221,27 @@ const map = {
 "Ä":"દ્ધ",
 "Å":"ક્ષ",
 "Æ":"જ્ઞ",
-"Ç":"ત્ત",
-"È":"શ્વ",
 
-"€":"હ્ન",
-"…":"હ્ય"
+"\\":"",
+"`":"",
+
+"“":"",
+"”":"",
+
+"‘":"",
+"’":""
 
 };
 
-function convertAakash(text){
+function convertAakash(input){
+
+let text = input;
+
+/* =========================================
+   STEP 1 : BASIC CHARACTER MAPPING
+========================================= */
 
 let out = "";
-
-/* BASIC MAP */
 
 for(let i=0;i<text.length;i++){
 
@@ -227,34 +251,59 @@ out += map[ch] || ch;
 
 }
 
-/* =========================
-   FIX I MATRA
-========================= */
+/* =========================================
+   STEP 2 : FIX I MATRA
+========================================= */
 
-out = out.replace(/([ક-હ]્?)(િ)/g,"િ$1");
+out = out.replace(/([ક-હ])િ/g,"િ$1");
 
-/* =========================
-   FIX REPH
-========================= */
+out = out.replace(/([ક-હ]્[ક-હ])િ/g,function(m){
+
+return "િ"+m.replace("િ","");
+
+});
+
+/* =========================================
+   STEP 3 : FIX REPH
+========================================= */
 
 out = out.replace(/ર્([ક-હ])/g,"$1્ર");
 
-/* =========================
-   FIX COMMON CONJUNCTS
-========================= */
+/* =========================================
+   STEP 4 : COMMON CONJUNCT FIXES
+========================================= */
 
 const fixes = {
 
-"પ્ર":"પ્ર",
-"ત્ર":"ત્ર",
-"ક્ષ":"ક્ષ",
-"જ્ઞ":"જ્ઞ",
-"શ્ર":"શ્ર",
-"દ્વ":"દ્વ",
-"દ્ર":"દ્ર",
+"પ|":"પ્ર",
+"ભ|":"ભ્ર",
+"ક|":"ક્ર",
+"ગ|":"ગ્ર",
+"દ|":"દ્ર",
+"ત|":"ત્ર",
+"શ|":"શ્ર",
+"જ|":"જ્ર",
 
-"કૃ":"કૃ",
+"પ્િર":"પ્રિ",
+"પ્િરય":"પ્રિય",
 
+"િવષ્ણુ":"વિષ્ણુ",
+"િદશા":"દિશા",
+"િચંતા":"ચિંતા",
+"િહમાલય":"હિમાલય",
+"િહર":"હરિ",
+
+"દ્વારપા,":"દ્વારપાલ",
+
+"રાએકાસ":"રાક્ષસ",
+"મંકરી":"મશ્કરી",
+
+"એકા":"એક",
+"એકીર":"ક્ષીર",
+
+"પદ્વાર":"ઉદ્ધાર",
+
+"ૂં":"ું",
 "ંા":"ાં",
 "ંિ":"િં",
 "ંી":"ીં",
@@ -262,7 +311,12 @@ const fixes = {
 "ંૂ":"ૂં",
 "ંે":"ેં",
 
-"્્":"્"
+"।।":"॥",
+"।।।।":"॥",
+
+"્્":"્",
+
+"  ":" "
 
 };
 
@@ -272,16 +326,23 @@ out = out.split(k).join(fixes[k]);
 
 }
 
-/* =========================
-   REMOVE BAD CHARS
-========================= */
+/* =========================================
+   STEP 5 : REMOVE GARBAGE
+========================================= */
 
-out = out.replace(/¤/g,"");
+out = out.replace(/[\\]/g,"");
+
+out = out.replace(/઼/g,"");
+
 out = out.replace(/�/g,"");
 
-/* =========================
-   CLEAN SPACES
-========================= */
+out = out.replace(/¥/g,"");
+
+out = out.replace(/¤/g,"");
+
+/* =========================================
+   STEP 6 : FINAL CLEANUP
+========================================= */
 
 out = out.replace(/\s+/g," ");
 
@@ -289,7 +350,11 @@ return out;
 
 }
 
-$("#btn").click(function(){
+/* =========================================
+   BUTTON CLICK
+========================================= */
+
+$("#btn-convert").click(function(){
 
 let src = $("#src").val();
 
@@ -302,4 +367,5 @@ $("#dst").val(result);
 </script>
 
 </body>
+
 </html>
