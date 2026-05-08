@@ -1,371 +1,111 @@
 <!DOCTYPE html>
-<html lang="gu">
-
+<html lang="en">
 <head>
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
-<title>Aakash To Unicode Converter</title>
-
-<link rel="stylesheet"
-href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-
-<style>
-
-body{
-    background:#f3f5f7;
-    padding:20px;
-}
-
-.card{
-    background:white;
-    padding:25px;
-    border-radius:10px;
-    box-shadow:0 2px 12px rgba(0,0,0,0.1);
-}
-
-textarea{
-    resize:vertical;
-    font-size:18px;
-    line-height:1.8;
-    font-family:
-    "Noto Sans Gujarati",
-    "Shruti",
-    sans-serif;
-}
-
-#btn-convert{
-    margin-top:15px;
-    font-weight:bold;
-}
-
-h2{
-    margin-bottom:20px;
-}
-
-</style>
-
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Professional Terafont Aakash Converter</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <style>
+        body { background-color: #f0f2f5; padding-top: 30px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .converter-container { background: #ffffff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        textarea { font-size: 16px; line-height: 1.6; border-radius: 8px; border: 1px solid #ddd; }
+        .btn-convert { margin-top: 20px; font-size: 18px; font-weight: 600; text-transform: uppercase; padding: 12px; }
+        h2 { color: #2c3e50; margin-bottom: 25px; }
+    </style>
 </head>
-
 <body>
-
-<div class="container-fluid">
-
-<div class="row">
-
-<div class="col-md-10 col-md-offset-1">
-
-<div class="card">
-
-<h2 class="text-center text-primary">
-Terafont Aakash → Unicode Converter
-</h2>
-
-<div class="row">
-
-<div class="col-md-6">
-
-<h4>Source (Aakash Font)</h4>
-
-<textarea
-id="src"
-class="form-control"
-rows="24"
-placeholder="Paste Aakash font text here..."></textarea>
-
-<button
-id="btn-convert"
-class="btn btn-success btn-lg btn-block">
-
-CONVERT TO UNICODE
-
-</button>
-
-</div>
-
-<div class="col-md-6">
-
-<h4>Unicode Output</h4>
-
-<textarea
-id="dst"
-class="form-control"
-rows="24"
-readonly
-placeholder="Unicode Gujarati output..."></textarea>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-
-<script>
-
-const map = {
-
-"A":"બ",
-"B":"ખ",
-"C":"હ",
-"D":"મ",
-"E":"ભ",
-"F":"ા",
-"G":"ન",
-"H":"જ",
-"I":"ય",
-"J":"વ",
-"K":"છ",
-"L":"ી",
-"M":"ો",
-"N":"દ",
-"O":"ફ",
-"P":"઼",
-"Q":"ષ્",
-"R":"ચ",
-"S":"ક",
-"T":"ત",
-"U":"ગ",
-"V":"અ",
-"W":"ધ",
-"X":"શ",
-"Y":"થ",
-"Z":"ર",
-
-"a":"બ્",
-"b":"ક્",
-"c":"ઁ",
-"d":"મ્",
-"e":"ભ્",
-"f":")",
-"g":"ન્",
-"h":"ઝ",
-"i":"ય્",
-"j":"વ્",
-"k":"ઋ",
-"l":"િ",
-"m":"ં",
-"n":"ં",
-"o":"ો",
-"p":"પ",
-"q":"્",
-"r":"ર",
-"s":"(",
-"t":"ત્",
-"u":"ુ",
-"v":"-",
-"w":"ૂ",
-"x":"ષ",
-"y":"્ય",
-"z":"શ્ર",
-
-"0":"ડ",
-"1":"ક્ષ",
-"2":"૨",
-"3":"ઘ",
-"4":"૪",
-"5":"પ",
-"6":"ણ",
-"7":"જ્ઞ",
-"8":"ટ",
-"9":"ઠ",
-
-"!":"૧",
-"@":"૨",
-"#":"૩",
-"$":"૪",
-"%":"૫",
-"^":"૬",
-"&":"૭",
-"*":"૮",
-"(":"૯",
-")":"૦",
-
-"|":"્ર",
-"[":"ે",
-"]":"ુ",
-"{":"ૈ",
-"}":"ૌ",
-
-";":"સ",
-":":"સ્",
-
-"<":"લ્",
-">":"ઇ",
-
-"/":"ળ",
-"?":"ળ્",
-
-"~":"રૂ",
-
-"£":"દ્વ",
-"ã":"દ્ર",
-"Ÿ":"્યો",
-"Ô":"જ",
-"Ò":"જી",
-"Ê":"ક્ર",
-"Þ":"છે",
-"‰":"દ્ધ",
-"™":"ત્ર",
-"•":"પ્ર",
-"†":"ત્ત",
-
-"Ä":"દ્ધ",
-"Å":"ક્ષ",
-"Æ":"જ્ઞ",
-
-"\\":"",
-"`":"",
-
-"“":"",
-"”":"",
-
-"‘":"",
-"’":""
-
-};
-
-function convertAakash(input){
-
-let text = input;
-
-/* =========================================
-   STEP 1 : BASIC CHARACTER MAPPING
-========================================= */
-
-let out = "";
-
-for(let i=0;i<text.length;i++){
-
-let ch = text[i];
-
-out += map[ch] || ch;
-
-}
-
-/* =========================================
-   STEP 2 : FIX I MATRA
-========================================= */
-
-out = out.replace(/([ક-હ])િ/g,"િ$1");
-
-out = out.replace(/([ક-હ]્[ક-હ])િ/g,function(m){
-
-return "િ"+m.replace("િ","");
-
-});
-
-/* =========================================
-   STEP 3 : FIX REPH
-========================================= */
-
-out = out.replace(/ર્([ક-હ])/g,"$1્ર");
-
-/* =========================================
-   STEP 4 : COMMON CONJUNCT FIXES
-========================================= */
-
-const fixes = {
-
-"પ|":"પ્ર",
-"ભ|":"ભ્ર",
-"ક|":"ક્ર",
-"ગ|":"ગ્ર",
-"દ|":"દ્ર",
-"ત|":"ત્ર",
-"શ|":"શ્ર",
-"જ|":"જ્ર",
-
-"પ્િર":"પ્રિ",
-"પ્િરય":"પ્રિય",
-
-"િવષ્ણુ":"વિષ્ણુ",
-"િદશા":"દિશા",
-"િચંતા":"ચિંતા",
-"િહમાલય":"હિમાલય",
-"િહર":"હરિ",
-
-"દ્વારપા,":"દ્વારપાલ",
-
-"રાએકાસ":"રાક્ષસ",
-"મંકરી":"મશ્કરી",
-
-"એકા":"એક",
-"એકીર":"ક્ષીર",
-
-"પદ્વાર":"ઉદ્ધાર",
-
-"ૂં":"ું",
-"ંા":"ાં",
-"ંિ":"િં",
-"ંી":"ીં",
-"ંુ":"ું",
-"ંૂ":"ૂં",
-"ંે":"ેં",
-
-"।।":"॥",
-"।।।।":"॥",
-
-"્્":"્",
-
-"  ":" "
-
-};
-
-for(let k in fixes){
-
-out = out.split(k).join(fixes[k]);
-
-}
-
-/* =========================================
-   STEP 5 : REMOVE GARBAGE
-========================================= */
-
-out = out.replace(/[\\]/g,"");
-
-out = out.replace(/઼/g,"");
-
-out = out.replace(/�/g,"");
-
-out = out.replace(/¥/g,"");
-
-out = out.replace(/¤/g,"");
-
-/* =========================================
-   STEP 6 : FINAL CLEANUP
-========================================= */
-
-out = out.replace(/\s+/g," ");
-
-return out;
-
-}
-
-/* =========================================
-   BUTTON CLICK
-========================================= */
-
-$("#btn-convert").click(function(){
-
-let src = $("#src").val();
-
-let result = convertAakash(src);
-
-$("#dst").val(result);
-
-});
-
-</script>
-
+    <div class="container">
+        <div class="converter-container">
+            <h2 class="text-center">Gujarati Terafont to Unicode</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <label>Paste Terafont Aakash Text Here:</label>
+                    <textarea id="src" class="form-control" rows="18" placeholder="Paste text..."></textarea>
+                    <button id="btn-convert" class="btn btn-primary btn-block btn-convert">Convert Now</button>
+                </div>
+                <div class="col-md-6">
+                    <label>Unicode (Shruti) Result:</label>
+                    <textarea id="dst" class="form-control" rows="21" readonly placeholder="Unicode will appear here..."></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script>
+        const aakashMap = {
+            "!": "૧", "\"": "\u0AB0\u0ACD", "#": "૩", "$": "૪", "%": "પ્",
+            "&": "૬", "'": "\u0AC3", "(": "મ", ")": "ફ", "*": "૭",
+            "+": "ત્ર", ",": "લ", "-": "ઢ", ".": "ઈ", "/": "ળ",
+            "0": "ડ", "1": "ક્ષ", "3": "ઘ", "4": ",", "5": "પ",
+            "6": "ણ", "7": "જ્ઞ", "8": "ટ", "9": "ઠ", ":": "સ્",
+            ";": "સ", "<": "લ્", "=": "્ર", ">": "ઈ", "?": "ળ્",
+            "@": "%", "A": "બ", "B": "ખ", "C": "હ", "D": "મ",
+            "E": "ભ", "F": "ા", "G": "ન", "H": "જ", "I": "ય",
+            "J": "વ", "K": "છ", "L": "ી", "M": "ો", "N": "દ",
+            "O": "ફ", "P": ".", "Q": "ષ્ર્", "R": "ચ", "S": "ક",
+            "T": "ત", "U": "ગ", "V": "અ", "W": "ધ", "X": "શ",
+            "Y": "થ", "Z": "ર", "[": "ે", "\\": "ં", "]": "ુ",
+            "^": "ણ્", "_": "૦", "a": "બ્", "b": "ક્", "d": "મ્",
+            "e": "ભ્", "g": "ન્", "h": "ઝ", "i": "ય્", "j": "વ્",
+            "k": "ઋ", "l": "િ", "p": "ઉ", "t": "ત્", "z": "શ્ર",
+            "|": "્ર", "v": " - ", "s": "(", "f": ")", "q": "્",
+            "forwardChars": ["િ"],
+            "backwardChars": ["\""],
+            "comboChars": {
+                "p|": "પ્ર", "પ|": "પ્ર", "ગ|": "ગ્ર", "ભ|": "ભ્ર", "મ|": "મ્ર",
+                "દ|": "દ્ર", "બ|": "બ્ર", "કæું": "કહ્યું", "પપ": "ઉપ", "પદ": "ઉદ"
+            }
+        };
+
+        $("#btn-convert").click(function() {
+            let txt = $("#src").val();
+            if (!txt) { $("#dst").val(""); return; }
+
+            let newTxt = "";
+            let forwardChars = aakashMap.forwardChars;
+            let backwardChars = aakashMap.backwardChars;
+            let comboChars = aakashMap.comboChars;
+            let indexToForward = -1;
+
+            for (let i = 0; i < txt.length; i++) {
+                let char = txt[i];
+                let newChar = aakashMap[char] || char;
+
+                // Handle Reph (Double quotes)
+                if (backwardChars.includes(newChar)) {
+                    let len = newTxt.length;
+                    newTxt = newTxt.substring(0, len - 1) + newChar + newTxt[len - 1];
+                } else {
+                    newTxt += newChar;
+                }
+
+                // Handle Vowel Swap (િ)
+                if (indexToForward >= 0) {
+                    let textParts = newTxt.split("");
+                    let vowel = textParts.splice(indexToForward, 1)[0];
+                    textParts.push(vowel);
+                    newTxt = textParts.join("");
+                    indexToForward = -1;
+                }
+
+                if (forwardChars.includes(newChar)) {
+                    indexToForward = newTxt.length - 1;
+                }
+
+                // Handle Conjuncts (p| -> પ્ર)
+                for (let key in comboChars) {
+                    if (newTxt.endsWith(key)) {
+                        newTxt = newTxt.replace(new RegExp(escapeRegExp(key) + '$'), comboChars[key]);
+                    }
+                }
+            }
+            $("#dst").val(newTxt);
+        });
+
+        function escapeRegExp(string) {
+            return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
+    </script>
 </body>
-
 </html>
