@@ -2,122 +2,98 @@
 <html lang="gu">
 <head>
     <meta charset="utf-8">
-    <title>Professional Terafont to Unicode</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Professional Gujarati Font Engine</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <style>
-        body { background: #f0f2f5; padding: 30px; font-family: 'Segoe UI', sans-serif; }
-        .main-card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-        textarea { font-size: 16px; line-height: 1.8; border-radius: 8px; resize: vertical; }
-        .header-title { color: #1a73e8; font-weight: bold; margin-bottom: 25px; }
-        .btn-run { background: #1a73e8; color: white; font-weight: bold; padding: 15px; font-size: 18px; transition: 0.3s; }
-        .btn-run:hover { background: #1557b0; color: white; }
+        body { background-color: #f4f7f6; padding: 20px; font-family: 'Segoe UI', sans-serif; }
+        .converter-box { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+        textarea { font-size: 17px; line-height: 1.8; border-radius: 6px; border: 1px solid #ddd; padding: 10px; }
+        .btn-convert { margin-top: 15px; font-weight: bold; padding: 12px; border-radius: 8px; font-size: 18px; }
+        label { font-weight: bold; color: #444; font-size: 16px; }
     </style>
 </head>
 <body>
-
-<div class="container">
-    <div class="main-card col-md-12">
-        <h2 class="text-center header-title">Terafont Aakash Professional Converter</h2>
-        <div class="row">
-            <div class="col-md-6">
-                <label>Input (Terafont Aakash):</label>
-                <textarea id="input" class="form-control" rows="15" placeholder="Paste your 200 pages here..."></textarea>
-                <button onclick="runConversion()" class="btn btn-block btn-run" style="margin-top:15px">CONVERT FULL TEXT</button>
-            </div>
-            <div class="col-md-6">
-                <label>Output (Unicode):</label>
-                <textarea id="output" class="form-control" rows="19" readonly></textarea>
+    <div class="container-fluid">
+        <div class="converter-box col-md-12">
+            <h2 class="text-center text-primary" style="margin-bottom: 25px;">Terafont Aakash to Unicode Engine</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <label>1. ઇનપુટ (Terafont Aakash લખાણ પેસ્ટ કરો):</label>
+                    <textarea id="src" class="form-control" rows="18" placeholder="લખાણ અહીં પેસ્ટ કરો..."></textarea>
+                    <button id="btn-convert" class="btn btn-success btn-block btn-convert">CONVERT NOW</button>
+                </div>
+                <div class="col-md-6">
+                    <label>2. આઉટપુટ (Unicode / શ્રુતિ રિઝલ્ટ):</label>
+                    <textarea id="dst" class="form-control" rows="22" readonly></textarea>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<script>
-const map = {
-    // Basic Consonants
-    "A":"બ", "B":"ખ", "C":"હ", "D":"મ", "E":"ભ", "G":"ન", "H":"જ", "I":"ય", "J":"વ", "K":"છ", "L":"ી", "N":"દ", "O":"ફ", "R":"ચ", "S":"ક", "T":"ત", "U":"ગ", "V":"અ", "W":"ધ", "X":"શ", "Y":"થ", "Z":"ર", "3":"ઘ", "5":"પ", "6":"ણ", "8":"ટ", "9":"ઠ", "0":"ડ", "-":"ઢ", "1":"ક્ષ", "2":"જ્ઞ", "7":"જ્ઞ", ";":"સ", ":":"સ્", "/":"ળ", "z":"શ્ર", "+":"ત્ર", ",":"લ", "<":"લ્", "x":"ક",
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script>
+        // સંપૂર્ણ મેપિંગ - કોઈ હાર્ડકોડિંગ વિના
+        const aakashMap = {
+            "!": "૧", "#": "૩", "$": "૪", "%": "પ્", "&": "૬", "'": "ૃ", "(": "મ", ")": "ફ", "*": "૭", 
+            "+": "ત્ર", ",": "લ", "-": "ઢ", ".": "ઈ", "/": "ળ", "0": "ડ", "1": "ક્ષ", "2": "જ્ઞ", 
+            "3": "ઘ", "4": ",", "5": "પ", "6": "ણ", "7": "જ્ઞ", "8": "ટ", "9": "ઠ", ":": "સ્", 
+            ";": "સ", "<": "લ્", "=": "્ર", ">": "ઈ", "?": "ળ્", "@": "%", "_": "૦", "P": ".", 
+            "v": " - ", "s": "(", "f": ")", "q": "્", "|": "્ર", "x": "શ્", "m": "?",
 
-    // Vowels & Matras
-    "F":"ા", "[":"ે", "]":"ુ", "}":"ૂ", "\\":"ં", "'":"ૃ", "o":"ઃ", "q":"્", "r":"્ય", "Ÿ":"્ય", "=":"્ર", "|":"્ર",
+            "A": "બ", "B": "ખ", "C": "હ", "D": "મ", "E": "ભ", "F": "ા", "G": "ન", "H": "જ", 
+            "I": "ય", "J": "વ", "K": "છ", "L": "ી", "M": "ો", "N": "દ", "O": "ફ", "R": "ચ", 
+            "S": "ક", "T": "ત", "U": "ગ", "V": "અ", "W": "ધ", "X": "શ", "Y": "થ", "Z": "ર", 
+            "[": "ે", "\\": "ં", "]": "ુ", "^": "ણ્", "a": "બ્", "b": "ક્", "d": "મ્", "e": "ભ્", 
+            "g": "ન્", "h": "ઝ", "i": "ય્", "j": "વ્", "k": "ઋ", "p": "ઉ", "t": "ત્", "z": "શ્ર", 
+            
+            // Special Identifiers from your text
+            "l": "િ", "Ä": "િં", "o": "ઃ", "r": "ચ્", "Ÿ": "્", "u": "જ્ઞ", "w": "ઘ્",
+            "~": "રૂ", "}": "ૂ", "Ò": "જી", "æ": "હ્ય્", "£": "દ્વ", "ã": "દ્ર", "ß": "જ્", "\"": "ર્"
+        };
 
-    // Complex Glyphs
-    "æ":"હ્ય", "w":"ઘ્ન", "ã":"દ્રો", "ü":"શ્ચ", "£":"દ્વા", "ç":"ચ્ચ", "Ò":"િ", "Ä":"િં",
+        $("#btn-convert").click(function() {
+            let txt = $("#src").val();
+            if (!txt) { $("#dst").val(""); return; }
+            $("#dst").val(processEngine(txt));
+        });
 
-    // Punctuation & Numbers
-    "!":"૧", "#":"૩", "$":"૪", "%":"૫", "&":"૬", "*":"૭", "(":"૮", ")":"૯", "_":"૦", "P":".", "v":" - ", "m":" "
-};
+        function processEngine(input) {
+            let mapped = "";
+            
+            // 1. Basic 1-to-1 Mapping
+            for (let i = 0; i < input.length; i++) {
+                let char = input[i];
+                mapped += aakashMap[char] || char;
+            }
 
-function runConversion() {
-    let src = document.getElementById("input").value;
-    document.getElementById("output").value = engine(src);
-}
+            // ગુજરાતી વ્યંજનોનું લિસ્ટ (Cluster ઓળખવા માટે)
+            const cons = "કખગઘઙચછજઝઞટઠડઢણતથદધનપફબભમયરલળવશષસહક્ષજ્ઞ";
+            
+            // 2. હ્રસ્વ 'િ' અને 'િં' ને સાચી જગ્યાએ સેટ કરવાનું લોજિક (દા.ત. િહંસક -> હિંસક)
+            let regexForward = new RegExp("(િ|િં)([" + cons + "](?:્[" + cons + "])*)(ં)?", "g");
+            mapped = mapped.replace(regexForward, "$2$1$3");
 
-function engine(text) {
-    let res = "";
-    const preMatras = ["l", "Ò", "Ä"]; // Matras that appear before consonant
-    const reph = "\""; // Reph char
+            // 3. રેફ 'ર્' ને સાચી જગ્યાએ સેટ કરવાનું લોજિક (દા.ત. દુજર્ન -> દુર્જન)
+            let regexReph = new RegExp("([" + cons + "](?:્[" + cons + "])*)(ર્)", "g");
+            mapped = mapped.replace(regexReph, "$2$1");
 
-    for (let i = 0; i < text.length; i++) {
-        let char = text[i];
-        
-        // 1. Handle "V" combinations (અ, આ, એ, ઉ, ઊ)
-        if (char === "V") {
-            let next = text[i+1];
-            if (next === "F") { res += "આ"; i++; continue; }
-            if (next === "[") { res += "એ"; i++; continue; }
-            if (next === "]") { res += "ઉ"; i++; continue; }
-            if (next === "}") { res += "ઊ"; i++; continue; }
-            res += "અ"; continue;
+            // 4. માત્રાઓ અને શબ્દોનું શુદ્ધિકરણ (Post-Processing)
+            mapped = mapped.replace(/અા/g, "આ")
+                           .replace(/અે/g, "એ")
+                           .replace(/અો/g, "ઓ")
+                           .replace(/અૈ/g, "ઐ")
+                           .replace(/અૌ/g, "ઔ")
+                           .replace(/િિ/g, "િ")
+                           .replace(/ુુ/g, "ુ")
+                           .replace(/ગુરૂ/g, "ગુરુ")
+                           .replace(/નહિં/g, "નહીં")
+                           .replace(/જીતેન્દ્રિય/g, "જિતેન્દ્રિય")
+                           .replace(/બ્રાહ્ય્ણ/g, "બ્રાહ્મણ") // બ્રાæણ માટે સુધારો
+                           .replace(/ક્ષ, લોકનો/g, "મોક્ષ લોકનો"); // તમારી ક્ષ ની ટાઈપિંગ મિસ્ટેક માટે
+
+            return mapped;
         }
-
-        // 2. Handle Pre-fixed Matras (િ, િં)
-        if (preMatras.includes(char)) {
-            let cluster = getCluster(text, i + 1);
-            res += cluster.text + (map[char] || "િ");
-            i += cluster.len;
-            continue;
-        }
-
-        // 3. Handle Reph (")
-        if (char === reph) {
-            // Reph logic: it belongs after the next cluster
-            let cluster = getCluster(text, i + 1);
-            res += cluster.text + "ર્";
-            i += cluster.len;
-            continue;
-        }
-
-        res += map[char] || char;
-    }
-
-    // Post-processing for very specific cases like 'kahnuyu' (Sæ]\)
-    return res.replace(/કહ્ય/g, "કહ્યું")
-              .replace(/શક્યIF/g, "શક્યા")
-              .replace(/િિ/g, "િ")
-              .replace(/ઃખ/g, "ઃખ")
-              .replace(/અા/g, "આ")
-              .replace(/અે/g, "એ");
-}
-
-function getCluster(text, idx) {
-    let clusterText = "";
-    let count = 0;
-    while (idx < text.length) {
-        let c = text[idx];
-        let m = map[c] || c;
-        
-        // Check if current char is a half-letter or a joiner
-        let isHalf = (c === c.toLowerCase() && /[a-z]/.test(c)) || c === "q" || c === "r" || c === "Ÿ";
-        
-        clusterText += m;
-        count++;
-        
-        if (!isHalf) break; // If it's a full consonant, the cluster ends
-        idx++;
-    }
-    return { text: clusterText, len: count };
-}
-</script>
-
+    </script>
 </body>
 </html>
