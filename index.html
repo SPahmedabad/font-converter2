@@ -57,9 +57,9 @@
       });
     });
 
-    $("#src").change(function() {
-      transform();
-    });
+     $("#src").on('input', function() {
+    transform();
+  })
 
     function transform() {
       var txt = $("#src").val(),
