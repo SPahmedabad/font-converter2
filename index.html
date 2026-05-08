@@ -1,141 +1,118 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <title>Gujarati Font Converter</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Terafont Aakash to Unicode Converter</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <style>
+        body { background-color: #f4f7f6; padding-top: 20px; }
+        .converter-card { background: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        textarea { resize: vertical; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 16px; }
+        #btn-convert { margin-top: 15px; font-weight: bold; letter-spacing: 1px; }
+    </style>
 </head>
 <body>
-  <div class="container" style="width:100%">
-    <div class="page-header">
-      <h2>Terafont Aakash to Unicode Converter</h2>
-    </div>
-    <div class="row">
-      <div class="col-md-6">
-        <h4>1. Select Font & Paste Text:</h4>
-        <div class="form-group">
-          <select id="ddl-src-font" class="form-control">
-            <option value="">-- Click to Load Mapping --</option>
-          </select>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-10 col-md-offset-1">
+                <div class="converter-card">
+                    <h2 class="text-center text-primary">Terafont Aakash to Unicode</h2>
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4>1. Source (Terafont Aakash)</h4>
+                            <textarea id="src" class="form-control" rows="15" placeholder="Paste your 200+ pages of Terafont text here..."></textarea>
+                            <button id="btn-convert" class="btn btn-success btn-lg btn-block">CONVERT TO GUJARATI UNICODE</button>
+                        </div>
+                        <div class="col-md-6">
+                            <h4>2. Destination (Unicode / Shruti)</h4>
+                            <textarea id="dst" class="form-control" rows="18" readonly placeholder="Result will appear here..."></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="form-group">
-          <textarea class="form-control" id="src" rows="18" placeholder="Paste your Terafont text here..."></textarea>
-        </div>
-        <button id="btn-convert" class="btn btn-primary btn-block">Click to Convert Now</button>
-      </div>
-      <div class="col-md-6">
-        <h4>2. Converted Unicode Text:</h4>
-        <textarea id="dst" class="form-control" rows="21" readonly placeholder="Result will appear here..."></textarea>
-      </div>
     </div>
-  </div>
 
-  <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-  <script>
-    // Update these paths to match your actual GitHub structure exactly
-    var srcFonts = [{
-      text: "Terafont Aakash / Kinnari",
-      value: "static/mapping/terafont-kinnari.json"
-    }];
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script>
+        // Production-ready Terafont Aakash Mapping
+        const aakashMap = {
+            "!": "\u0AE7", "\"": "\u0AB0\u0ACD", "#": "\u0AE9", "$": "\u0AEA", "%": "\u0AAA\u0ACD",
+            "&": "\u0AEC", "'": "\u0AC3", "(": "\u0AEE", ")": "\u0AEF", "*": "\u0AED",
+            "+": "\u0AA4\u0ACD\u0AB0\u200B", ",": "\u0AB2", "-": "\u0AA2", ".": "\u0A88",
+            "/": "\u0AB3", "0": "\u0AA1", "1": "\u0A95\u0ACD\u0AB7", "3": "\u0A98",
+            "4": ",", "5": "\u0AAA", "6": "\u0AA3", "7": "\u0A9C\u0ACD\u0A9E\u200B",
+            "8": "\u0A9F", "9": "\u0AA0", ":": "\u0AB8\u0ACD", ";": "\u0AB8",
+            "<": "\u0AB2\u0ACD", "=": "\u0ACD\u0AB0", ">": "\u0A87", "?": "\u0AB3\u0ACD",
+            "@": "%", "A": "\u0AAC", "B": "\u0A96", "C": "\u0AB9", "D": "\u0AAE",
+            "E": "\u0AAD", "F": "\u0ABE", "G": "\u0AA8", "H": "\u0A9C", "I": "\u0AAF",
+            "J": "\u0AB5", "K": "\u0A9B", "L": "\u0AC0", "M": "\u0ACB", "N": "\u0AA6",
+            "O": "\u0AAB", "P": ".", "Q": "\u0AB7\u0ACD", "R": "\u0A9A", "S": "\u0A95",
+            "T": "\u0AA4", "U": "\u0A97", "V": "\u0A85", "W": "\u0AA7", "X": "\u0AB6",
+            "Y": "\u0AA5", "Z": "\u0AB0", "[": "\u0AC7", "\\": "\u0A82", "]": "\u0AC1",
+            "^": "\u0AA3\u0ACD", "_": "\u0AE6", "a": "\u0AAC\u0ACD", "b": "\u0A95\u0ACD",
+            "d": "\u0AAE\u0ACD", "e": "\u0AAD\u0ACD", "g": "\u0AA8\u0ACD", "h": "\u0A9D",
+            "i": "\u0AAF\u0ACD", "j": "\u0AB5\u0ACD", "k": "\u0A8B", "l": "\u0ABF",
+            "p": "\u0A89", "t": "\u0AA4\u0ACD", "z": "\u0AB6\u0ACD\u0AB0", "~": "\u0AB0\u0AC2",
+            "forwardChars": ["\u0ABF"],
+            "backwardChars": ["\""],
+            "comboChars": {
+                "\u0AB7\u0ACD\u0ABE": "\u0AB7",
+                "\u0A95\u0ACD\u0AB7\u0ABE": "\u0A95\u0ACD\u0AB7",
+                "\u0AB2\u0ACD\u0ABE": "\u0AB2"
+            }
+        };
 
-    $(function() {
-      for (var i = 0; i < srcFonts.length; i++) {
-        $("#ddl-src-font").append('<option value="' + srcFonts[i].value + '">' + srcFonts[i].text + '</option>');
-      }
-    });
+        $("#btn-convert").click(function() {
+            transform();
+        });
 
-    var map;
+        function transform() {
+            let txt = $("#src").val();
+            if (!txt) { $("#dst").val(""); return; }
 
-    // Load JSON Mapping
-    $("#ddl-src-font").change(function() {
-      var jsonPath = $(this).val();
-      if (!jsonPath) return;
+            let newTxt = "";
+            let forwardChars = aakashMap.forwardChars;
+            let backwardChars = aakashMap.backwardChars;
+            let comboChars = aakashMap.comboChars;
+            let indexToForward = -1;
 
-      $.getJSON(jsonPath, function(data) {
-        map = data;
-        alert("Success: Font mapping loaded!");
-        console.log("Mapping Data Loaded:", map);
-      }).fail(function(jqxhr, textStatus, error) {
-        var err = textStatus + ", " + error;
-        alert("Error: Could not load JSON file. Check Console (F12).");
-        console.error("Request Failed: " + err);
-      });
-    });
+            for (let i = 0; i < txt.length; i++) {
+                let char = txt[i];
+                let newChar = aakashMap[char] || char;
 
-    // Manual Button Click
-    $("#btn-convert").click(function() {
-      if (!map) {
-        alert("Please select a font from the dropdown first!");
-        return;
-      }
-      transform();
-    });
+                // Handle reph/backward chars (like double quotes in Aakash)
+                if (backwardChars.includes(newChar)) {
+                    let len = newTxt.length;
+                    newTxt = newTxt.substring(0, len - 1) + newChar + newTxt[len - 1];
+                } else {
+                    newTxt += newChar;
+                }
 
-    function transform() {
-      var txt = $("#src").val();
-      if (!txt) { $("#dst").val(""); return; }
+                // Handle Forward Vowel Swapping (The 'i' matra logic)
+                if (indexToForward >= 0) {
+                    let currentLen = newTxt.length;
+                    newTxt = newTxt.substring(0, indexToForward) + 
+                             newTxt.substring(indexToForward + 1) + 
+                             newTxt[indexToForward];
+                    indexToForward = -1;
+                }
 
-      var newTxt = "",
-        indexToForward = -1,
-        forwardChars = map["forwardChars"] || [],
-        forwardSkipChars = map["forwardSkipChars"] || [],
-        backwardChars = map["backwardChars"] || [],
-        comboChars = map["comboChars"] || {};
+                if (forwardChars.includes(newChar)) {
+                    indexToForward = newTxt.length - 1;
+                }
 
-      for (var i = 0; i < txt.length; i++) {
-        var char = txt[i],
-          newChar = map[char] || char;
-
-        if (backwardChars.indexOf(newChar) >= 0) {
-          var l = newTxt.length;
-          newTxt = newTxt.substr(0, l - 1) + newChar + newTxt[l - 1];
-        } else if (startsWithAny(forwardSkipChars, newChar) && endsWithAny(forwardChars, newTxt)) {
-          var l = newTxt.length;
-          newTxt = newTxt.substr(0, l - 1) + newChar + newTxt[l - 1];
-        } else {
-          newTxt += newChar;
+                // Handle Combos (Conjuncts)
+                for (let key in comboChars) {
+                    if (newTxt.endsWith(key)) {
+                        newTxt = newTxt.replace(new RegExp(key + '$'), comboChars[key]);
+                    }
+                }
+            }
+            $("#dst").val(newTxt);
         }
-
-        var comboKey = endsWithAnyProp(comboChars, newTxt);
-        if (comboKey) {
-          newTxt = newTxt.replace(new RegExp(comboKey + '$'), comboChars[comboKey]);
-        }
-
-        if (indexToForward >= 0) {
-          if (!endsWithAny(forwardSkipChars, newChar)) {
-            newTxt = newTxt.substr(0, indexToForward) + newTxt.substr(indexToForward + 1) + newTxt[indexToForward];
-            indexToForward = -1;
-          }
-        }
-
-        if (forwardChars.indexOf(newChar) >= 0) {
-          indexToForward = newTxt.length - 1;
-        }
-      }
-      $("#dst").val(newTxt);
-    }
-
-    function endsWithAny(list, str) {
-      for (var i = 0; i < list.length; i++) {
-        if (str.endsWith(list[i])) return true;
-      }
-      return false;
-    }
-
-    function endsWithAnyProp(obj, str) {
-      for (var key in obj) {
-        if (str.endsWith(key)) return key;
-      }
-      return null;
-    }
-
-    function startsWithAny(list, str) {
-      for (var i = 0; i < list.length; i++) {
-        if (str.startsWith(list[i])) return true;
-      }
-      return false;
-    }
-  </script>
+    </script>
 </body>
 </html>
