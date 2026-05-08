@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>Terafont Aakash Converter</title>
+<title>Aakash To Unicode Converter</title>
 
 <link rel="stylesheet"
 href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
@@ -12,28 +12,29 @@ href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 <style>
 
 body{
-    background:#f5f5f5;
+    background:#f3f5f7;
     padding:20px;
-    font-family:Arial;
 }
 
 .card{
     background:white;
-    padding:20px;
+    padding:25px;
     border-radius:10px;
-    box-shadow:0 2px 10px rgba(0,0,0,0.1);
+    box-shadow:0 2px 12px rgba(0,0,0,0.1);
 }
 
 textarea{
-    width:100%;
     resize:vertical;
     font-size:18px;
-    line-height:1.7;
+    line-height:1.8;
+    font-family:
+    "Noto Sans Gujarati",
+    "Shruti",
+    sans-serif;
 }
 
-.btn{
+#btn{
     margin-top:15px;
-    font-size:18px;
     font-weight:bold;
 }
 
@@ -44,10 +45,14 @@ textarea{
 
 <div class="container-fluid">
 
+<div class="row">
+
+<div class="col-md-10 col-md-offset-1">
+
 <div class="card">
 
 <h2 class="text-center text-primary">
-Terafont Aakash → Unicode Gujarati
+Terafont Aakash → Unicode Converter
 </h2>
 
 <hr>
@@ -56,25 +61,32 @@ Terafont Aakash → Unicode Gujarati
 
 <div class="col-md-6">
 
-<h4>Terafont Text</h4>
+<h4>Source (Aakash Font)</h4>
 
-<textarea id="src" rows="25"></textarea>
+<textarea id="src"
+class="form-control"
+rows="22"></textarea>
 
-<button id="convertBtn"
-class="btn btn-success btn-block">
-Convert
+<button id="btn"
+class="btn btn-success btn-lg btn-block">
+CONVERT
 </button>
 
 </div>
 
 <div class="col-md-6">
 
-<h4>Unicode Gujarati</h4>
+<h4>Unicode Output</h4>
 
-<textarea id="dst" rows="25"></textarea>
+<textarea id="dst"
+class="form-control"
+rows="22"
+readonly></textarea>
 
 </div>
 
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -100,7 +112,7 @@ const map = {
 "M":"ો",
 "N":"દ",
 "O":"ફ",
-"P":"।",
+"P":".",
 "Q":"ષ્",
 "R":"ચ",
 "S":"ક",
@@ -114,7 +126,7 @@ const map = {
 
 "a":"બ્",
 "b":"ક્",
-"c":"ં",
+"c":"ઁ",
 "d":"મ્",
 "e":"ભ્",
 "f":")",
@@ -124,19 +136,19 @@ const map = {
 "j":"વ્",
 "k":"ઋ",
 "l":"િ",
-"m":"ુ",
+"m":"ં",
 "n":"ં",
 "o":"ો",
 "p":"પ",
 "q":"્",
-"r":"ર્",
+"r":"ર",
 "s":"(",
 "t":"ત્",
-"u":"ૂ",
+"u":"ુ",
 "v":"-",
-"w":"ૈ",
-"x":"ં",
-"y":"ે",
+"w":"ૂ",
+"x":"ષ",
+"y":"્ય",
 "z":"શ્ર",
 
 "0":"ડ",
@@ -161,141 +173,127 @@ const map = {
 "(":"૯",
 ")":"૦",
 
+"|":"્ર",
 "[":"ે",
 "]":"ુ",
 "{":"ૈ",
-"}":"ૂ",
-
-"|":"્ર",
-
-"<":"લ્",
-">":"ઇ",
+"}":"ૌ",
 
 ";":"સ",
 ":":"સ્",
+
+"<":"લ્",
+">":"ઇ",
 
 "/":"ળ",
 "?":"ળ્",
 
 "~":"રૂ",
 
-"\"":"ર્",
-
-"æ":"હ્ય",
-"Ä":"ધ",
-"Ê":"ક્ર",
-"Ò":"જી",
-"Ô":"ઓ",
-"Ÿ":"્ય",
-"×":"॥",
-
 "£":"દ્વ",
 "ã":"દ્ર",
-"Þ":"હ્ન",
-"‰":"શ્વ",
-"€":"ત્ર",
+"Ÿ":"્યો",
+"Ô":"જ",
+"Ò":"જી",
+"Ê":"ક્ર",
+"Þ":"છે",
+"‰":"દ્ધ",
+"™":"ત્ર",
+"•":"પ્ર",
+"†":"ત્ત",
+
+"Ä":"દ્ધ",
+"Å":"ક્ષ",
+"Æ":"જ્ઞ",
+"Ç":"ત્ત",
+"È":"શ્વ",
+
+"€":"હ્ન",
+"…":"હ્ય"
 
 };
 
-function convertText(text){
+function convertAakash(text){
 
 let out = "";
 
-/* CHARACTER MAP */
+/* BASIC MAP */
 
 for(let i=0;i<text.length;i++){
 
-    let ch = text[i];
+let ch = text[i];
 
-    out += map[ch] || ch;
+out += map[ch] || ch;
+
 }
 
-/* FIX i MATRA */
+/* =========================
+   FIX I MATRA
+========================= */
 
-out = out.replace(/([ક-હ])િ/g,"િ$1");
+out = out.replace(/([ક-હ]્?)(િ)/g,"િ$1");
 
-/* FIX REPH */
+/* =========================
+   FIX REPH
+========================= */
 
-out = out.replace(/ર્([ક-હ])/g,"ર઼્$1");
+out = out.replace(/ર્([ક-હ])/g,"$1્ર");
 
-/* FIX COMMON WORDS */
+/* =========================
+   FIX COMMON CONJUNCTS
+========================= */
 
 const fixes = {
 
-"પુત્ર​":"પુત્ર",
-"યાત્ર​ા":"યાત્રા",
-"શત્ર​ુ":"શત્રુ",
-"ભકિત":"ભક્તિ",
-"મુકિત":"મુક્તિ",
-"દશર્ન":"દર્શન",
-"વણર્ન":"વર્ણન",
-"તપüયાર્":"તપસ્યા",
-"સંયમનું":"સંયમનું",
-"પદાસ":"ઉદાસ",
-"દુોખ":"દુઃખ",
-"માયોર્":"માર્યો",
-"કæુું":"કહ્યું",
-"થાઅો":"થાઓ",
-"નÞી":"નથી",
-"અે":"એ",
-"અો":"ઓ",
-"અાવ્યા":"આવ્યા",
-"અાપો":"આપો",
-"અાવશે":"આવશે",
-"અેક":"એક",
-"અેટલું":"એટલું",
-"જ્ઞ​":"જ્ઞ",
-"ક્ષડડ":"ખંડ",
-"ક્ષઈક્ષ":"એકેક",
-"મxકરી":"મશ્કરી",
-"વÄધાઈને":"વીંધાઈને",
-"છ}ટકે":"છૂટકે",
-"છ}ટી":"છૂટી",
-"ત}ટી":"તૂટી",
-"ફ}લાયા":"ફૂલાયા",
-"વwયો":"વધ્યો",
-"પગ્ર":"પછી",
-"સ¿ા":"સત્તા",
-"ક્ષ":"એક",
-"Ô":"જો",
-"Ò":"જી",
-"wયાન":"ધ્યાન",
-"ક્ષીરસાગર":"ક્ષીરસાગર",
-"ક્ષ વાર":"એક વાર",
-"ક્ષ દિવસ":"એક દિવસ",
-"ક્ષ વષર્":"એક વર્ષ",
-"ક્ષ પગે":"એક પગે",
-"ક્ષ લાનું":"એકછત્ર",
-"સßજનો":"સજ્જનો",
-"પ£ાર":"ઉદ્ધાર",
+"પ્ર":"પ્ર",
+"ત્ર":"ત્ર",
+"ક્ષ":"ક્ષ",
+"જ્ઞ":"જ્ઞ",
+"શ્ર":"શ્ર",
+"દ્વ":"દ્વ",
+"દ્ર":"દ્ર",
+
+"કૃ":"કૃ",
+
+"ંા":"ાં",
+"ંિ":"િં",
+"ંી":"ીં",
+"ંુ":"ું",
+"ંૂ":"ૂં",
+"ંે":"ેં",
+
+"્્":"્"
 
 };
 
-for(let key in fixes){
+for(let k in fixes){
 
-    out = out.split(key).join(fixes[key]);
+out = out.split(k).join(fixes[k]);
+
 }
 
-/* REMOVE ZERO WIDTH */
+/* =========================
+   REMOVE BAD CHARS
+========================= */
 
-out = out.replace(/[\u200B-\u200D\uFEFF]/g,'');
+out = out.replace(/¤/g,"");
+out = out.replace(/�/g,"");
 
-/* CLEAN SPACES */
+/* =========================
+   CLEAN SPACES
+========================= */
 
-out = out.replace(/\s+/g,' ');
-
-/* RESTORE PARAGRAPHS */
-
-out = out.replace(/ \-/g,"\n-");
+out = out.replace(/\s+/g," ");
 
 return out;
+
 }
 
-$("#convertBtn").click(function(){
+$("#btn").click(function(){
 
 let src = $("#src").val();
 
-let result = convertText(src);
+let result = convertAakash(src);
 
 $("#dst").val(result);
 
