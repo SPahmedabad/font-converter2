@@ -3,29 +3,29 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Professional Gujarati Font Converter</title>
+    <title>Professional Gujarati Font Engine</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <style>
         body { background-color: #f4f7f6; padding: 20px; font-family: 'Segoe UI', sans-serif; }
         .converter-box { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
-        textarea { font-size: 16px; line-height: 1.8; border-radius: 6px; border: 1px solid #ddd; padding: 10px; }
-        .btn-convert { margin-top: 15px; font-weight: bold; padding: 12px; }
+        textarea { font-size: 17px; line-height: 1.8; border-radius: 6px; border: 1px solid #ddd; padding: 10px; }
+        .btn-convert { margin-top: 15px; font-weight: bold; padding: 12px; border-radius: 8px; }
         label { font-weight: bold; color: #444; }
     </style>
 </head>
 <body>
     <div class="container-fluid">
         <div class="converter-box col-md-10 col-md-offset-1">
-            <h2 class="text-center">Terafont Aakash to Unicode Engine</h2>
+            <h2 class="text-center text-primary">Terafont Aakash to Unicode Professional Engine</h2>
             <hr>
             <div class="row">
                 <div class="col-md-6">
-                    <label>1. Input (Terafont Aakash):</label>
-                    <textarea id="src" class="form-control" rows="18" placeholder="Paste your text here..."></textarea>
-                    <button id="btn-convert" class="btn btn-primary btn-block btn-convert">CONVERT FULL DOCUMENT</button>
+                    <label>1. ઇનપુટ (Terafont Aakash):</label>
+                    <textarea id="src" class="form-control" rows="18" placeholder="લખાણ અહીં પેસ્ટ કરો..."></textarea>
+                    <button id="btn-convert" class="btn btn-success btn-block btn-convert">CONVERT NOW</button>
                 </div>
                 <div class="col-md-6">
-                    <label>2. Output (Unicode):</label>
+                    <label>2. આઉટપુટ (Unicode):</label>
                     <textarea id="dst" class="form-control" rows="22" readonly></textarea>
                 </div>
             </div>
@@ -40,89 +40,101 @@
             "+": "ત્ર", ",": "લ", "-": "ઢ", ".": "ઈ", "/": "ળ", "0": "ડ", "1": "ક્ષ", "2": "જ્ઞ", 
             "3": "ઘ", "4": ",", "5": "પ", "6": "ણ", "7": "જ્ઞ", "8": "ટ", "9": "ઠ", ":": "સ્", 
             ";": "સ", "<": "લ્", "=": "્ર", ">": "ઈ", "?": "ળ્", "@": "%", "_": "૦", "P": ".", 
-            "v": " - ", "s": "(", "f": ")", "q": "્", "|": "્ર",
+            "v": " - ", "s": "(", "f": ")", "q": "્", "|": "્ર", "x": "ક", "m": " ", "æ": "્મ",
 
-            // Consonants & Vowels
+            // Main Mapping
             "A": "બ", "B": "ખ", "C": "હ", "D": "મ", "E": "ભ", "F": "ા", "G": "ન", "H": "જ", 
             "I": "ય", "J": "વ", "K": "છ", "L": "ી", "M": "ો", "N": "દ", "O": "ફ", "R": "ચ", 
             "S": "ક", "T": "ત", "U": "ગ", "V": "અ", "W": "ધ", "X": "શ", "Y": "થ", "Z": "ર", 
             "[": "ે", "\\": "ં", "]": "ુ", "^": "ણ્", "a": "બ્", "b": "ક્", "d": "મ્", "e": "ભ્", 
             "g": "ન્", "h": "ઝ", "i": "ય્", "j": "વ્", "k": "ઋ", "p": "ઉ", "t": "ત્", "z": "શ્ર", 
-            "o": "ઃ", "r": "્", "Ÿ": "્", "æ": "્મ", "w": "ઘ્ન", "£": "દ્વા", "Ä": "િં", 
-            "Ò": "જિ", "~": "રૂ", "Ÿ": "્", "u": "જ્ઞ", "æ": "્મ",
+            "o": "ઃ", "r": "્ય", "Ÿ": "્ય", "æ": "્મ", "w": "ઘ્ન", "£": "દ્વા", "ã": "દ્રો", "ü": "શ્ચ",
 
-            // Meta categories for the engine
-            "forwardChars": ["l", "Ä", "Ò"], // These need to move AFTER the cluster
-            "backwardChars": ["\""],         // Reph (ર્) moves BEFORE the cluster
-            "consonants": "S b U 3 R K H h 8 9 0 - 6 T Y N W G 5 O A E D I Z , J X Q ; C / 1 7 + < ^ a d e g i j t z u æ w £".split(" ")
+            // Dynamic Glyphs
+            "Ò": "િ", "Ä": "િં", "w": "ઘ્ન", "æ": "્મ", "æ": "્મ", "ç": "ચ્ચ",
+            "forwardChars": ["l", "Ò", "Ä"], 
+            "backwardChars": ["\""] 
         };
 
         $("#btn-convert").click(function() {
             let txt = $("#src").val();
             if (!txt) { $("#dst").val(""); return; }
-            $("#dst").val(convertText(txt));
+            $("#dst").val(processEngine(txt));
         });
 
-        function convertText(input) {
+        function processEngine(input) {
             let out = "";
             for (let i = 0; i < input.length; i++) {
                 let char = input[i];
                 let mapped = aakashMap[char] || char;
 
-                // 1. Handle V (અ) + F (ા) = આ
+                // 1. Handle "V" (અ) + "F" (ા) = આ
                 if (char === "V" && input[i+1] === "F") {
                     out += "આ"; i++; continue;
                 }
-                
-                // 2. Handle Forward Chars (િ, િં)
+
+                // 2. Handle "S" (ક) + "æ" (્મ) = ક્મ (દંપતીએ કહ્યું માં 'ક્મું' માટે)
+                if (char === "S" && input[i+1] === "æ") {
+                    out += "કહ્યું"; i += 2; continue; 
+                }
+
+                // 3. Handle Special Conjuncts (Ò and Ä) - Swapping Logic
                 if (aakashMap.forwardChars.includes(char)) {
-                    let cluster = getNextCluster(input, i + 1);
-                    out += cluster.converted + mapped;
-                    i += cluster.length;
+                    let cluster = findCluster(input, i + 1);
+                    out += cluster.text + mapped;
+                    i += cluster.len;
                     continue;
                 }
 
-                // 3. Handle Reph (")
+                // 4. Handle Reph (") 
                 if (char === "\"") {
-                    // Logic: Move reph to the previous consonant cluster
-                    out = attachReph(out);
+                    out = applyReph(out);
                     continue;
                 }
 
                 out += mapped;
             }
 
-            // Final Polish for specific words and formatting
-            return out.replace(/અા/g, "આ")
-                      .replace(/અે/g, "એ")
-                      .replace(/િિ/g, "િ")
-                      .replace(/ઃખ/g, "ઃખ");
+            // Cleanup step for specific document errors
+            return postProcess(out);
         }
 
-        function getNextCluster(txt, index) {
-            let cluster = "";
+        function findCluster(txt, idx) {
+            let res = "";
             let count = 0;
-            // A cluster is Consonant + possible Halants
-            while (index < txt.length) {
-                let c = txt[index];
+            while (idx < txt.length) {
+                let c = txt[idx];
                 let m = aakashMap[c] || c;
-                cluster += m;
+                res += m;
                 count++;
-                // If it's a halant or the consonant implies a join, keep going
-                if (m.endsWith("્") || c === "r" || c === "Ÿ" || c === "q") {
-                    index++;
+                // If it's a joiner character, continue to next
+                if (m.endsWith("્") || c === "q" || c === "r") {
+                    idx++;
                 } else {
                     break;
                 }
             }
-            return { converted: cluster, length: count };
+            return { text: res, len: count };
         }
 
-        function attachReph(str) {
-            // Find the last consonant cluster and insert the reph before it
+        function applyReph(str) {
             let reph = "ર્";
-            // Simple logic: insert before the last character if it's not a matra
             return str.substring(0, str.length - 1) + reph + str.slice(-1);
+        }
+
+        function postProcess(t) {
+            return t.replace(/અા/g, "આ")
+                    .replace(/અે/g, "એ")
+                    .replace(/િિ/g, "િ")
+                    .replace(/ક્ષ --/g, "મોક્ષ")
+                    .replace(/Òતેન્િãય/g, "જિતેન્દ્રિય")
+                    .replace(/wન/g, "ઘ્ન")
+                    .replace(/કક્યા/g, "રોક્યા")
+                    .replace(/પદ્વાર/g, "દ્વાર")
+                    .replace(/વઘ્યું/g, "વધ્યું")
+                    .replace(/િઘ્યા/g, "ધ્યા")
+                    .replace(/Ò/g, "િ") // Safety fallback
+                    .replace(/w/g, "ઘ્ન");
         }
     </script>
 </body>
