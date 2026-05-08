@@ -35,106 +35,300 @@
         </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-    <script>
-        // Production-ready Terafont Aakash Mapping
-     const aakashMap = {
-    // Basic Numbers & Characters
-    "!": "\u0AE7", "\"": "\u0AB0\u0ACD", "#": "\u0AE9", "$": "\u0AEA", "%": "\u0AAA\u0ACD",
-    "&": "\u0AEC", "'": "\u0AC3", "(": "\u0AEE", ")": "\u0AEF", "*": "\u0AED",
-    "+": "\u0AA4\u0ACD\u0AB0\u200B", ",": "\u0AB2", "-": "\u0AA2", ".": "\u0A88",
-    "/": "\u0AB3", "0": "\u0AA1", "1": "\u0A95\u0ACD\u0AB7", "3": "\u0A98",
-    "4": ",", "5": "\u0AAA", "6": "\u0AA3", "7": "\u0A9C\u0ACD\u0A9E\u200B",
-    "8": "\u0A9F", "9": "\u0AA0", ":": "\u0AB8\u0ACD", ";": "\u0AB8",
-    "<": "\u0AB2\u0ACD", "=": "\u0ACD\u0AB0", ">": "\u0A87", "?": "\u0AB3\u0ACD",
-    "@": "%", "A": "\u0AAC", "B": "\u0A96", "C": "\u0AB9", "D": "\u0AAE",
-    "E": "\u0AAD", "F": "\u0ABE", "G": "\u0AA8", "H": "\u0A9C", "I": "\u0AAF",
-    "J": "\u0AB5", "K": "\u0A9B", "L": "\u0AC0", "M": "\u0ACB", "N": "\u0AA6",
-    "O": "\u0AAB", "P": ".", "Q": "\u0AB7\u0ACD", "R": "\u0A9A", "S": "\u0A95",
-    "T": "\u0AA4", "U": "\u0A97", "V": "\u0A85", "W": "\u0AA7", "X": "\u0AB6",
-    "Y": "\u0AA5", "Z": "\u0AB0", "[": "\u0AC7", "\\": "\u0A82", "]": "\u0AC1",
-    "^": "\u0AA3\u0ACD", "_": "\u0AE6",
+   <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 
-    // Lowercase Mapping
-    "a": "\u0AAC\u0ACD", "b": "\u0A95\u0ACD", "d": "\u0AAE\u0ACD", "e": "\u0AAD\u0ACD", 
-    "g": "\u0AA8\u0ACD", "h": "\u0A9D", "i": "\u0AAF\u0ACD", "j": "\u0AB5\u0ACD", 
-    "k": "\u0A8B", "l": "\u0ABF", "p": "\u0AAA", "t": "\u0AA4\u0ACD", 
-    "z": "\u0AB6\u0ACD\u0AB0", "~": "\u0AB0\u0AC2", "o": "\u0ACB",
+<script>
 
-    // Specific symbols found in your text
-    "v": " - ",   // Separator fix for bullets/dashes
-    "s": "(",     // Bracket fix
-    "f": ")",     // Bracket fix
-    "q": "્",     // Halant fix
-    "|": "્ર",    // This fixes the p| (પ્ર) and m| (મ્ર) issue
+const aakashMap = {
 
-    // Control Logic
-    "forwardChars": ["\u0ABF"],
-    "backwardChars": ["\""],
-    "comboChars": {
-        // Handling the pipe character as a conjunct modifier
-        "p|": "\u0AAA\u0ACD\u0AB0",
-        "પ|": "\u0AAA\u0ACD\u0AB0",
-        "ભ|": "\u0AAD\u0ACD\u0AB0",
-        "ગ|": "\u0A97\u0ACD\u0AB0",
-        "દ|": "\u0AA6\u0ACD\u0AB0",
-        "બ|": "\u0AAC\u0ACD\u0AB0",
-        "મ|": "\u0AAE\u0ACD\u0AB0",
-        "કæું": "કહ્યું", // Custom fix for specific word logic errors
-        "\u0AB7\u0ACD\u0ABE": "\u0AB7",
-        "\u0A95\u0ACD\u0AB7\u0ABE": "\u0A95\u0ACD\u0AB7",
-        "\u0AB2\u0ACD\u0ABE": "\u0AB2"
+    // =========================
+    // BASIC CHAR MAP
+    // =========================
+
+    "!": "૧",
+    "\"": "ર્",
+    "#": "૩",
+    "$": "૪",
+    "%": "પ્",
+    "&": "૬",
+    "'": "ૃ",
+    "(": "૮",
+    ")": "૯",
+    "*": "૭",
+    "+": "ત્ર",
+    ",": "લ",
+    "-": "ડ",
+    ".": "ઈ",
+    "/": "ળ",
+
+    "0": "ડ",
+    "1": "ક્ષ",
+    "2": "૨",
+    "3": "ઘ",
+    "4": ",",
+    "5": "પ",
+    "6": "ણ",
+    "7": "જ્ઞ",
+    "8": "ટ",
+    "9": "ઠ",
+
+    ":": "સ્",
+    ";": "સ",
+    "<": "લ્",
+    "=": "્ર",
+    ">": "ઇ",
+    "?": "ળ્",
+
+    "@": "%",
+    "A": "બ",
+    "B": "ખ",
+    "C": "હ",
+    "D": "મ",
+    "E": "ભ",
+    "F": "ા",
+    "G": "ન",
+    "H": "જ",
+    "I": "ય",
+    "J": "વ",
+    "K": "છ",
+    "L": "ી",
+    "M": "ો",
+    "N": "દ",
+    "O": "ફ",
+    "P": ".",
+    "Q": "ષ્",
+    "R": "ચ",
+    "S": "ક",
+    "T": "ત",
+    "U": "ગ",
+    "V": "અ",
+    "W": "ધ",
+    "X": "શ",
+    "Y": "થ",
+    "Z": "ર",
+
+    "[": "ે",
+    "\\": "ં",
+    "]": "ુ",
+    "^": "ણ્",
+    "_": "૦",
+
+    // =========================
+    // LOWERCASE
+    // =========================
+
+    "a": "બ્",
+    "b": "ક્",
+    "c": "્ચ",
+    "d": "મ્",
+    "e": "ભ્",
+    "f": ")",
+    "g": "ન્",
+    "h": "ઝ",
+    "i": "ય્",
+    "j": "વ્",
+    "k": "ઋ",
+    "l": "િ",
+    "m": "મ",
+    "n": "ં",
+    "o": "ો",
+    "p": "પ",
+    "q": "્",
+    "r": "ર્",
+    "s": "(",
+    "t": "ત્",
+    "u": "ઉ",
+    "v": " - ",
+    "w": "ધ્",
+    "x": "શ્",
+    "y": "થ્",
+    "z": "શ્ર",
+    "~": "રૂ",
+
+    // =========================
+    // OCR / GARBAGE FIX
+    // =========================
+
+    "Ò": "જ",
+    "Ô": "ય",
+    "Ê": "પ્ર",
+    "Ã": "દ્ર",
+    "Ä": "દ્ધ",
+    "Å": "ક્ષ",
+    "Æ": "ત્ર",
+    "Ç": "ત્ત",
+    "È": "ન્ન",
+    "É": "શ્વ",
+    "Ë": "હ્ન",
+    "Ì": "દ્દ",
+    "Í": "હ્ય",
+    "Î": "હ્મ",
+    "Ï": "શ્વ",
+    "Ð": "ત્ત્વ",
+    "Ñ": "જ્ઞ",
+    "Ó": "હૃ",
+    "Õ": "હ્ન",
+    "Ö": "દ્ય",
+    "×": "॥",
+    "Ÿ": "",
+    "™": "",
+    "æ": "્યું",
+
+    // =========================
+    // FORWARD MATRA
+    // =========================
+
+    forwardChars: ["િ"],
+
+    // =========================
+    // BACKWARD REPH
+    // =========================
+
+    backwardChars: ["ર્"],
+
+    // =========================
+    // COMBOS
+    // =========================
+
+    comboChars: {
+
+        // પ્ર
+        "p|": "પ્ર",
+        "P|": "પ્ર",
+
+        // બ્ર
+        "A|": "બ્ર",
+
+        // ક્ર
+        "S|": "ક્ર",
+
+        // ગ્ર
+        "U|": "ગ્ર",
+
+        // દ્ર
+        "N|": "દ્ર",
+
+        // મ્ર
+        "D|": "મ્ર",
+
+        // શ્ર
+        "X|": "શ્ર",
+
+        // Gujarati direct
+        "પ|": "પ્ર",
+        "બ|": "બ્ર",
+        "ક|": "ક્ર",
+        "ગ|": "ગ્ર",
+        "દ|": "દ્ર",
+        "મ|": "મ્ર",
+        "શ|": "શ્ર",
+
+        // cleanup fixes
+        "કæું": "કહ્યું",
+        "થયંુ": "થયું",
+        "કયુર્ં": "કયું",
+        "અા": "આ",
+        "અે": "એ",
+        "અો": "ઓ",
+        "અૈ": "ઐ"
     }
 };
 
-        $("#btn-convert").click(function() {
-            transform();
-        });
 
-        function transform() {
-            let txt = $("#src").val();
-            if (!txt) { $("#dst").val(""); return; }
 
-            let newTxt = "";
-            let forwardChars = aakashMap.forwardChars;
-            let backwardChars = aakashMap.backwardChars;
-            let comboChars = aakashMap.comboChars;
-            let indexToForward = -1;
+// ======================================
+// MAIN CONVERTER
+// ======================================
 
-            for (let i = 0; i < txt.length; i++) {
-                let char = txt[i];
-                let newChar = aakashMap[char] || char;
+function convertAakash(text) {
 
-                // Handle reph/backward chars (like double quotes in Aakash)
-                if (backwardChars.includes(newChar)) {
-                    let len = newTxt.length;
-                    newTxt = newTxt.substring(0, len - 1) + newChar + newTxt[len - 1];
-                } else {
-                    newTxt += newChar;
-                }
+    // =========================
+    // STEP 1: APPLY COMBOS FIRST
+    // =========================
 
-                // Handle Forward Vowel Swapping (The 'i' matra logic)
-                if (indexToForward >= 0) {
-                    let currentLen = newTxt.length;
-                    newTxt = newTxt.substring(0, indexToForward) + 
-                             newTxt.substring(indexToForward + 1) + 
-                             newTxt[indexToForward];
-                    indexToForward = -1;
-                }
+    for (let key in aakashMap.comboChars) {
+        text = text.split(key).join(aakashMap.comboChars[key]);
+    }
 
-                if (forwardChars.includes(newChar)) {
-                    indexToForward = newTxt.length - 1;
-                }
+    // =========================
+    // STEP 2: CHARACTER MAP
+    // =========================
 
-                // Handle Combos (Conjuncts)
-                for (let key in comboChars) {
-                    if (newTxt.endsWith(key)) {
-                        newTxt = newTxt.replace(new RegExp(key + '$'), comboChars[key]);
-                    }
-                }
-            }
-            $("#dst").val(newTxt);
-        }
-    </script>
+    let result = "";
+
+    for (let i = 0; i < text.length; i++) {
+
+        let ch = text[i];
+
+        result += aakashMap[ch] || ch;
+    }
+
+    // =========================
+    // STEP 3: FIX "િ"
+    // =========================
+
+    result = result.replace(
+        /([કખગઘઙચછજઝઞટઠડઢણતથદધનપફબભમયરલવશષસહળક્ષજ્ઞ])િ/g,
+        "િ$1"
+    );
+
+    // =========================
+    // STEP 4: REMOVE BAD HALANTS
+    // =========================
+
+    result = result.replace(/્+/g, "્");
+
+    // =========================
+    // STEP 5: FIX REPH ISSUES
+    // =========================
+
+    result = result.replace(/ર્ર/g, "ર્");
+
+    // =========================
+    // STEP 6: NORMALIZATION
+    // =========================
+
+    result = result
+        .replace(/અા/g, "આ")
+        .replace(/અે/g, "એ")
+        .replace(/અો/g, "ઓ")
+        .replace(/અૌ/g, "ઔ")
+        .replace(/ંા/g, "ાં")
+        .replace(/ેે/g, "ે")
+        .replace(/ોો/g, "ો")
+        .replace(/િિ/g, "િ")
+        .replace(/્ા/g, "")
+        .replace(/।।/g, "॥");
+
+    // =========================
+    // STEP 7: REMOVE EXTRA SPACES
+    // =========================
+
+    result = result.replace(/[ ]+/g, " ");
+
+    return result;
+}
+
+
+
+// ======================================
+// BUTTON CLICK
+// ======================================
+
+$("#btn-convert").click(function () {
+
+    const src = $("#src").val();
+
+    if (!src) {
+        $("#dst").val("");
+        return;
+    }
+
+    const converted = convertAakash(src);
+
+    $("#dst").val(converted);
+});
+
+</script>
 </body>
 </html>
