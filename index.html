@@ -3,28 +3,30 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Professional Gujarati Font Engine</title>
+    <title>Professional Terafont to Unicode</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <style>
-        body { background-color: #f4f7f6; padding: 20px; font-family: 'Segoe UI', sans-serif; }
-        .converter-box { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
-        textarea { font-size: 17px; line-height: 1.8; border-radius: 6px; border: 1px solid #ddd; padding: 10px; }
-        .btn-convert { margin-top: 15px; font-weight: bold; padding: 12px; border-radius: 8px; font-size: 18px; }
-        label { font-weight: bold; color: #444; font-size: 16px; }
+        body { background-color: #f8f9fa; padding: 25px; font-family: sans-serif; }
+        .converter-box { background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        textarea { font-size: 16px; line-height: 1.7; border-radius: 6px; padding: 12px; border: 1px solid #ced4da; }
+        .btn-run { margin-top: 15px; font-weight: bold; font-size: 18px; padding: 12px; }
+        h2 { color: #d9534f; font-weight: bold; margin-bottom: 20px; }
+        label { font-weight: bold; color: #333; }
     </style>
 </head>
 <body>
     <div class="container-fluid">
         <div class="converter-box col-md-12">
-            <h2 class="text-center text-primary" style="margin-bottom: 25px;">Terafont Aakash to Unicode Engine</h2>
+            <h2 class="text-center">Terafont Aakash to Unicode (Final Engine)</h2>
+            <hr>
             <div class="row">
                 <div class="col-md-6">
-                    <label>1. ઇનપુટ (Terafont Aakash લખાણ પેસ્ટ કરો):</label>
-                    <textarea id="src" class="form-control" rows="18" placeholder="લખાણ અહીં પેસ્ટ કરો..."></textarea>
-                    <button id="btn-convert" class="btn btn-success btn-block btn-convert">CONVERT NOW</button>
+                    <label>1. પેસ્ટ કરો (Terafont Aakash):</label>
+                    <textarea id="src" class="form-control" rows="18" placeholder="તમારું લખાણ અહીં પેસ્ટ કરો..."></textarea>
+                    <button id="btn-convert" class="btn btn-danger btn-block btn-run">રૂપાંતર કરો (CONVERT)</button>
                 </div>
                 <div class="col-md-6">
-                    <label>2. આઉટપુટ (Unicode / શ્રુતિ રિઝલ્ટ):</label>
+                    <label>2. શ્રુતિ/યુનિકોડ પરિણામ:</label>
                     <textarea id="dst" class="form-control" rows="22" readonly></textarea>
                 </div>
             </div>
@@ -33,23 +35,24 @@
 
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <script>
-        // સંપૂર્ણ મેપિંગ - કોઈ હાર્ડકોડિંગ વિના
         const aakashMap = {
+            // નંબર્સ અને ચિહ્નો
             "!": "૧", "#": "૩", "$": "૪", "%": "પ્", "&": "૬", "'": "ૃ", "(": "મ", ")": "ફ", "*": "૭", 
             "+": "ત્ર", ",": "લ", "-": "ઢ", ".": "ઈ", "/": "ળ", "0": "ડ", "1": "ક્ષ", "2": "જ્ઞ", 
             "3": "ઘ", "4": ",", "5": "પ", "6": "ણ", "7": "જ્ઞ", "8": "ટ", "9": "ઠ", ":": "સ્", 
             ";": "સ", "<": "લ્", "=": "્ર", ">": "ઈ", "?": "ળ્", "@": "%", "_": "૦", "P": ".", 
-            "v": " - ", "s": "(", "f": ")", "q": "્", "|": "્ર", "x": "શ્", "m": "?",
+            "v": " - ", "s": "(", "f": ")", "q": "્", "|": "્ર", "x": "શ્", "m": " ",
 
+            // સ્વર અને વ્યંજન (Capital & Small)
             "A": "બ", "B": "ખ", "C": "હ", "D": "મ", "E": "ભ", "F": "ા", "G": "ન", "H": "જ", 
             "I": "ય", "J": "વ", "K": "છ", "L": "ી", "M": "ો", "N": "દ", "O": "ફ", "R": "ચ", 
             "S": "ક", "T": "ત", "U": "ગ", "V": "અ", "W": "ધ", "X": "શ", "Y": "થ", "Z": "ર", 
             "[": "ે", "\\": "ં", "]": "ુ", "^": "ણ્", "a": "બ્", "b": "ક્", "d": "મ્", "e": "ભ્", 
             "g": "ન્", "h": "ઝ", "i": "ય્", "j": "વ્", "k": "ઋ", "p": "ઉ", "t": "ત્", "z": "શ્ર", 
             
-            // Special Identifiers from your text
+            // વિશિષ્ટ માત્રાઓ અને જોડાક્ષરો
             "l": "િ", "Ä": "િં", "o": "ઃ", "r": "ચ્", "Ÿ": "્", "u": "જ્ઞ", "w": "ઘ્",
-            "~": "રૂ", "}": "ૂ", "Ò": "જી", "æ": "હ્ય્", "£": "દ્વ", "ã": "દ્ર", "ß": "જ્", "\"": "ર્"
+            "~": "રૂ", "}": "ૂ", "Ò": "જી", "æ": "હ્ય્", "£": "દ્વ", "ã": "દ્ર", "ß": "જ્", "\"": "ર્", "Q": "ષ્"
         };
 
         $("#btn-convert").click(function() {
@@ -61,24 +64,40 @@
         function processEngine(input) {
             let mapped = "";
             
-            // 1. Basic 1-to-1 Mapping
+            // 1. ડાયનામિક ગ્લાયફ કન્વર્ઝન
             for (let i = 0; i < input.length; i++) {
                 let char = input[i];
+                
+                // હ્રસ્વ 'િ' (l) નું સ્માર્ટ ક્લસ્ટર લોજિક
+                if (char === "l") {
+                    let cluster = "";
+                    let j = i + 1;
+                    while (j < input.length) {
+                        let nextChar = input[j];
+                        let m = aakashMap[nextChar] || nextChar;
+                        cluster += m;
+                        // જો અક્ષર '્' (હલંત) થી પૂરો થતો હોય, તો તે અડધો અક્ષર છે (ક્લસ્ટર ચાલુ રહેશે)
+                        if (m.endsWith("્")) {
+                            j++;
+                        } else {
+                            j++;
+                            break;
+                        }
+                    }
+                    mapped += cluster + "િ";
+                    i = j - 1;
+                    continue;
+                }
+
                 mapped += aakashMap[char] || char;
             }
 
-            // ગુજરાતી વ્યંજનોનું લિસ્ટ (Cluster ઓળખવા માટે)
+            // 2. રેફ 'ર્' ને સાચી જગ્યાએ સેટ કરવાનું રેગ્યુલર એક્સપ્રેશન
             const cons = "કખગઘઙચછજઝઞટઠડઢણતથદધનપફબભમયરલળવશષસહક્ષજ્ઞ";
-            
-            // 2. હ્રસ્વ 'િ' અને 'િં' ને સાચી જગ્યાએ સેટ કરવાનું લોજિક (દા.ત. િહંસક -> હિંસક)
-            let regexForward = new RegExp("(િ|િં)([" + cons + "](?:્[" + cons + "])*)(ં)?", "g");
-            mapped = mapped.replace(regexForward, "$2$1$3");
+            let regexReph = new RegExp("([" + cons + "](?:્[" + cons + "])*[ાિીુૂૃેૈોૌંઃ]*)(ર્)", "g");
+            mapped = mapped.replace(regexReph, "ર્$1");
 
-            // 3. રેફ 'ર્' ને સાચી જગ્યાએ સેટ કરવાનું લોજિક (દા.ત. દુજર્ન -> દુર્જન)
-            let regexReph = new RegExp("([" + cons + "](?:્[" + cons + "])*)(ર્)", "g");
-            mapped = mapped.replace(regexReph, "$2$1");
-
-            // 4. માત્રાઓ અને શબ્દોનું શુદ્ધિકરણ (Post-Processing)
+            // 3. ગુજરાતી વ્યાકરણ અને ટાઈપિંગ મિસ્ટેકનું શુદ્ધિકરણ (Post-Processing)
             mapped = mapped.replace(/અા/g, "આ")
                            .replace(/અે/g, "એ")
                            .replace(/અો/g, "ઓ")
@@ -86,11 +105,8 @@
                            .replace(/અૌ/g, "ઔ")
                            .replace(/િિ/g, "િ")
                            .replace(/ુુ/g, "ુ")
-                           .replace(/ગુરૂ/g, "ગુરુ")
-                           .replace(/નહિં/g, "નહીં")
-                           .replace(/જીતેન્દ્રિય/g, "જિતેન્દ્રિય")
-                           .replace(/બ્રાહ્ય્ણ/g, "બ્રાહ્મણ") // બ્રાæણ માટે સુધારો
-                           .replace(/ક્ષ, લોકનો/g, "મોક્ષ લોકનો"); // તમારી ક્ષ ની ટાઈપિંગ મિસ્ટેક માટે
+                           .replace(/જ્ઞયા/g, "જ્ઞા")
+                           .replace(/ગુરૂ/g, "ગુરુ");
 
             return mapped;
         }
