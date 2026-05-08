@@ -3,29 +3,29 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Professional Terafont Aakash Converter</title>
+    <title>Final Terafont Aakash Converter</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <style>
-        body { background-color: #f0f2f5; padding-top: 30px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        .converter-container { background: #ffffff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
-        textarea { font-size: 16px; line-height: 1.6; border-radius: 8px; border: 1px solid #ddd; }
-        .btn-convert { margin-top: 20px; font-size: 18px; font-weight: 600; text-transform: uppercase; padding: 12px; }
-        h2 { color: #2c3e50; margin-bottom: 25px; }
+        body { background-color: #f8f9fa; padding-top: 20px; font-family: sans-serif; }
+        .main-box { background: #fff; padding: 30px; border-radius: 10px; box-shadow: 0 0 15px rgba(0,0,0,0.1); }
+        textarea { font-size: 17px; line-height: 1.6; border: 1px solid #ccc; border-radius: 5px; }
+        .btn-convert { margin-top: 15px; font-size: 18px; font-weight: bold; }
+        h2 { color: #d9534f; margin-bottom: 20px; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="converter-container">
-            <h2 class="text-center">Gujarati Terafont to Unicode</h2>
+    <div class="container-fluid">
+        <div class="col-md-10 col-md-offset-1 main-box">
+            <h2 class="text-center">Professional Terafont Aakash to Unicode</h2>
             <div class="row">
                 <div class="col-md-6">
-                    <label>Paste Terafont Aakash Text Here:</label>
-                    <textarea id="src" class="form-control" rows="18" placeholder="Paste text..."></textarea>
-                    <button id="btn-convert" class="btn btn-primary btn-block btn-convert">Convert Now</button>
+                    <label>ટેરાફોન્ટ આકાશ લખાણ અહીં પેસ્ટ કરો:</label>
+                    <textarea id="src" class="form-control" rows="20" placeholder="અહીં પેસ્ટ કરો..."></textarea>
+                    <button id="btn-convert" class="btn btn-danger btn-block btn-convert">રૂપાંતરિત કરો (CONVERT)</button>
                 </div>
                 <div class="col-md-6">
-                    <label>Unicode (Shruti) Result:</label>
-                    <textarea id="dst" class="form-control" rows="21" readonly placeholder="Unicode will appear here..."></textarea>
+                    <label>યુનિકોડ (ગુજરાતી) રિઝલ્ટ:</label>
+                    <textarea id="dst" class="form-control" rows="23" readonly placeholder="અહીં પરિણામ આવશે..."></textarea>
                 </div>
             </div>
         </div>
@@ -35,9 +35,9 @@
     <script>
         const aakashMap = {
             "!": "૧", "\"": "\u0AB0\u0ACD", "#": "૩", "$": "૪", "%": "પ્",
-            "&": "૬", "'": "\u0AC3", "(": "મ", ")": "ફ", "*": "૭",
+            "&": "૬", "'": "ૃ", "(": "મ", ")": "ફ", "*": "૭",
             "+": "ત્ર", ",": "લ", "-": "ઢ", ".": "ઈ", "/": "ળ",
-            "0": "ડ", "1": "ક્ષ", "3": "ઘ", "4": ",", "5": "પ",
+            "0": "ડ", "1": "ક્ષ", "2": "જ્ઞ", "3": "ઘ", "4": ",", "5": "પ",
             "6": "ણ", "7": "જ્ઞ", "8": "ટ", "9": "ઠ", ":": "સ્",
             ";": "સ", "<": "લ્", "=": "્ર", ">": "ઈ", "?": "ળ્",
             "@": "%", "A": "બ", "B": "ખ", "C": "હ", "D": "મ",
@@ -49,12 +49,14 @@
             "^": "ણ્", "_": "૦", "a": "બ્", "b": "ક્", "d": "મ્",
             "e": "ભ્", "g": "ન્", "h": "ઝ", "i": "ય્", "j": "વ્",
             "k": "ઋ", "l": "િ", "p": "ઉ", "t": "ત્", "z": "શ્ર",
-            "|": "્ર", "v": " - ", "s": "(", "f": ")", "q": "્",
+            "~": "રૂ", "v": " - ", "s": "(", "f": ")", "q": "્",
+            "|": "્ર", "o": "ો", "u": "જ્ઞ",
             "forwardChars": ["િ"],
             "backwardChars": ["\""],
             "comboChars": {
                 "p|": "પ્ર", "પ|": "પ્ર", "ગ|": "ગ્ર", "ભ|": "ભ્ર", "મ|": "મ્ર",
-                "દ|": "દ્ર", "બ|": "બ્ર", "કæું": "કહ્યું", "પપ": "ઉપ", "પદ": "ઉદ"
+                "દ|": "દ્ર", "બ|": "બ્ર", "કæું": "કહ્યું", "પપ": "ઉપ", "પદ": "ઉદ",
+                "~": "રૂ"
             }
         };
 
@@ -63,9 +65,6 @@
             if (!txt) { $("#dst").val(""); return; }
 
             let newTxt = "";
-            let forwardChars = aakashMap.forwardChars;
-            let backwardChars = aakashMap.backwardChars;
-            let comboChars = aakashMap.comboChars;
             let indexToForward = -1;
 
             for (let i = 0; i < txt.length; i++) {
@@ -73,30 +72,30 @@
                 let newChar = aakashMap[char] || char;
 
                 // Handle Reph (Double quotes)
-                if (backwardChars.includes(newChar)) {
+                if (aakashMap.backwardChars.includes(newChar)) {
                     let len = newTxt.length;
                     newTxt = newTxt.substring(0, len - 1) + newChar + newTxt[len - 1];
                 } else {
                     newTxt += newChar;
                 }
 
-                // Handle Vowel Swap (િ)
+                // Handle 'i' matra swap logic
                 if (indexToForward >= 0) {
-                    let textParts = newTxt.split("");
-                    let vowel = textParts.splice(indexToForward, 1)[0];
-                    textParts.push(vowel);
-                    newTxt = textParts.join("");
+                    let charsArray = newTxt.split("");
+                    let vowel = charsArray.splice(indexToForward, 1)[0];
+                    charsArray.push(vowel);
+                    newTxt = charsArray.join("");
                     indexToForward = -1;
                 }
 
-                if (forwardChars.includes(newChar)) {
+                if (aakashMap.forwardChars.includes(newChar)) {
                     indexToForward = newTxt.length - 1;
                 }
 
-                // Handle Conjuncts (p| -> પ્ર)
-                for (let key in comboChars) {
+                // Handle Conjuncts like p| -> પ્ર
+                for (let key in aakashMap.comboChars) {
                     if (newTxt.endsWith(key)) {
-                        newTxt = newTxt.replace(new RegExp(escapeRegExp(key) + '$'), comboChars[key]);
+                        newTxt = newTxt.replace(new RegExp(escapeRegExp(key) + '$'), aakashMap.comboChars[key]);
                     }
                 }
             }
